@@ -6,6 +6,18 @@
 
     <title>Dyplomna</title>
 
+    {% block stylesheets %}
+        <style>
+            .cut-and-hide {
+                overflow: hidden;
+                text-overflow:ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+                white-space: normal;
+            }
+        </style>
+    {% endblock %}
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
     <link type="text/css" rel="stylesheet" href="{{ asset('style/css/bootstrap.min.css') }}"/>

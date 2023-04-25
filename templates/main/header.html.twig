@@ -3,9 +3,9 @@
     <div id="top-header">
         <div class="container">
             <ul class="header-links pull-left">
-                <li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
-                <li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
-                <li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
+                <li><a href="#" id="copyPhone" onclick="copyText('copyPhone')"><i class="fa fa-phone"></i> +48883602197</a></li>
+                <li><a href="#" id="copyMail" onclick="copyText('copyMail')"><i class="fa fa-envelope-o"></i> poseva41@gmail.com</a></li>
+                <li><a href="https://www.google.com/maps?q=Lublin,+Poland" target="_blank"><i class="fa fa-map-marker"></i>Lublin Poland</a></li>
             </ul>
             <ul class="header-links pull-right">
                 <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
@@ -14,6 +14,17 @@
         </div>
     </div>
     <!-- /TOP HEADER -->
+
+    <script>
+        function copyText(elementId) {
+            var text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                alert("The text has been copied!");
+            }, function() {
+                alert("Couldn't copy text.");
+            });
+        }
+    </script>
 
     <!-- MAIN HEADER -->
     <div id="header">
@@ -24,7 +35,7 @@
                 <!-- LOGO -->
                 <div class="col-md-3">
                     <div class="header-logo">
-                        <a href="#" class="logo">
+                        <a href="/" class="logo">
                             <img src="{{ asset('./style/img/logo.png') }}" alt="">
                         </a>
                     </div>
@@ -34,16 +45,15 @@
                 <!-- SEARCH BAR -->
                 <div class="col-md-6">
                     <div class="header-search">
-                        <form>
-                            <select class="input-select">
-                                <option value="0"><a class="review-link" href="/">All Categories</a></option>
-                                {% for category in categories %}
-                                <option value="1"><a class="review-link" href="{{ path('app_category_show', { id: category.id }) }}">{{ category.name }}</a></option>
-                                {% endfor                            </select>
-                                %}
-                            <input class="input" placeholder="Search here">
-                            <button class="search-btn">Search</button>
-                        </form>
+                        {{ form_start(form) }}
+                            <div>
+                                {{ form_widget(form.search, {'attr': {'class': 'input', 'placeholder': 'Search here'} }) }}
+                                {{ form_errors(form.search) }}
+
+                                {{ form_label(form.submit) }}
+                                {{ form_widget(form.submit, {'attr': {'class': 'search-btn'} }) }}
+                            </div>
+                        {{ form_end(form) }}
                     </div>
                 </div>
                 <!-- /SEARCH BAR -->

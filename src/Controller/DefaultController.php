@@ -2,29 +2,39 @@
 
 namespace App\Controller;
 
+use App\Form\SearchForm;
 use App\Repository\ProductRepository;
 use App\Repository\CategoryRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use App\Entity\Product;
-use Doctrine\Persistence\ManagerRegistry;
-use App\Entity\Category;
+use Symfony\Component\HttpFoundation\Request;
 
 #[Route('/')]
 class DefaultController extends AbstractController
 {
     #[Route('/', name: 'app_main_index', methods: ['GET'])]
-    public function index(ProductRepository $productRepository, CategoryRepository $categoryRepository ): Response
+    public function index(ProductRepository $productRepository, CategoryRepository $categoryRepository, Request $request): Response
     {
 
-        dump($categoryRepository->findAll() );
-        dump("darowa");
+        $form = $this->createForm(SearchForm::class);
+        $search = null;
 
-        // this looks exactly the same
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $searchN = $productRepository->findByName($form->getData());
+            $searchD = $productRepository->findByDescription($form->getData());
+            $search['Word'] = $form->getData()['search'];
+            $search['Object'] = array_unique(array_merge($searchN, $searchD), SORT_REGULAR);
+
+        }
+
         return $this->render('main/index.html.twig', [
-            'products' => $productRepository->findAll(),
-            'categories' => $categoryRepository->findAll()
+            'productRepository' => $productRepository,
+            'categoryRepository' => $categoryRepository,
+            'form' => $form->createView(),
+            'search' => $search
         ]);
     }
+
 }
