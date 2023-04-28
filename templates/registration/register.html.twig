@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- HEAD-->
+{% include 'main/head.html.twig' %}
+<!-- HEAD-->
+<body>
+<!-- HEADER -->
+<header>
+    <!-- TOP HEADER -->
+    <div id="top-header">
+        <div class="container">
+            <ul class="header-links pull-left">
+                <li><a href="#" id="copyPhone" onclick="copyText('copyPhone')"><i class="fa fa-phone"></i> +48883602197</a></li>
+                <li><a href="#" id="copyMail" onclick="copyText('copyMail')"><i class="fa fa-envelope-o"></i> poseva41@gmail.com</a></li>
+                <li><a href="https://www.google.com/maps?q=Lublin,+Poland" target="_blank"><i class="fa fa-map-marker"></i>Lublin Poland</a></li>
+            </ul>
+            <ul class="header-links pull-right">
+                <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
+                <li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- /TOP HEADER -->
+
+    <script>
+        function copyText(elementId) {
+            var text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                alert("The text has been copied!");
+            }, function() {
+                alert("Couldn't copy text.");
+            });
+        }
+    </script>
+
+    <!-- MAIN HEADER -->
+    <div id="header">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <!-- LOGO -->
+                <div class="col-md-3">
+                    <div class="header-logo">
+                        <a href="/" class="logo">
+                            <img src="{{ asset('./style/img/logo.png') }}" alt="">
+                        </a>
+                    </div>
+                </div>
+                <!-- /LOGO -->
+
+
+
+            </div>
+            <!-- row -->
+        </div>
+        <!-- container -->
+    </div>
+    <!-- /MAIN HEADER -->
+</header>
+<!-- /HEADER -->
+
+<!-- SECTION -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <!-- STORE -->
+{#                        <div class="w-4/5 m-auto text-center">#}
+{#                            <div class="py-12 border-b border-gray-200">#}
+{#                                <h1 class="text-6xl pt-12 pb-8">#}
+{#                                    Register#}
+{#                                </h1>#}
+
+{#                                {{ form_start(registrationForm) }}#}
+{#                                {{ form_row(registrationForm.email) }}#}
+{#                                {{ form_row(registrationForm.plainPassword) }}#}
+
+{#                                {{ form_row(registrationForm.agreeTerms) }}#}
+
+{#                                <button#}
+{#                                        type="submit"#}
+{#                                        class="uppercase mt-15 bg-blue-500 text-gray-100 text-lg w-1/5 mt-10 font-extrabold py-4 px-8 rounded-3xl">#}
+{#                                    Register#}
+{#                                </button>#}
+
+{#                                {{ form_end(registrationForm) }}#}
+
+{#                            </div>#}
+{#                        </div>#}
+                        <div class="panel-position">
+                            <div class="panel">
+                                <h3>Registration</h3>
+                                <div class="panel-container">
+                                    {{ form_start(registrationForm) }}
+                                            {{ form_row(registrationForm.email, {'attr': {'class': 'input', 'type': 'email' } }) }}
+                                            {{ form_row(registrationForm.plainPassword, {'attr': {'class': 'input'} }) }}
+                                            {{ form_row(registrationForm.agreeTerms) }}
+                                        <button  type="submit" class="panel-continue">Sing up</button>
+                                    {{ form_end(registrationForm) }}
+                                </div>
+                            </div>
+                        </div>
+{#                        <div class="col-md-6">
+                            <div class="header-search">
+                                {{ form_start(registrationForm) }}
+                                <div>
+                                    {{ form_row(registrationForm.email, {'attr': {'class': 'input', 'placeholder': 'Search here'} }) }}
+                                    {{ form_row(registrationForm.plainPassword, {'attr': {'class': 'input', 'placeholder': 'Search here'} }) }}
+                                    {{ form_row(registrationForm.agreeTerms) }}
+                                </div>
+                                <button
+                                        type="submit"
+                                        class="uppercase mt-15 bg-blue-500 text-gray-100 text-lg w-1/5 mt-10 font-extrabold py-4 px-8 rounded-3xl">
+                                    Register
+                                </button>
+                                {{ form_end(registrationForm) }}
+                            </div>
+                        </div>#}
+                <!-- /store products -->
+
+            <!-- /STORE -->
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /SECTION -->
+<!-- /SECTION -->
+
+<!-- FOOTER -->
+{% include 'main/footer.html.twig' %}
+<!-- /FOOTER -->
+<!-- jQuery Plugins -->
+<script src="{{ asset('style/js/jquery.min.js') }}"></script>
+<script src="{{ asset('style/js/jquery.min.js') }}"></script>
+<script src="{{ asset('style/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('style/js/slick.min.js') }}"></script>
+<script src="{{ asset('style/js/nouislider.min.js') }}"></script>
+<script src="{{ asset('style/js/jquery.zoom.min.js') }}"></script>
+<script src="{{ asset('style/js/main.js') }}"></script>
+
+</body>
+</html>
+
+{% block title %}Register{% endblock %}
+
