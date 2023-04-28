@@ -9,7 +9,22 @@
             </ul>
             <ul class="header-links pull-right">
                 <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
-                <li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
+                {% if app.user.email is defined %}
+                    <li class="my-account">
+                        <a href="#"><i class="fa fa-user-o"></i>{{ app.user.email }}</a>
+                        <div class="box-slide">
+                            <p><a href="/logout" ><i class="fa fa-user-o"></i>Log out</a></p>
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="my-account">
+                        <a href="#" ><i class="fa fa-user-o"></i>My account</a>
+                        <div class="box-slide">
+                            <p><a href="/login" ><i class="fa fa-user-o"></i>Log in</a></p>
+                            <p><a href="/register" ><i class="fa fa-user-o"></i>Registration</a></p>
+                        </div>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>
@@ -24,6 +39,14 @@
                 alert("Couldn't copy text.");
             });
         }
+        // function toggle() {
+        //     var hiddenField = document.getElementById("hidden-field");
+        //     if (hiddenField.style.display === "none") {
+        //         hiddenField.style.display = "block";
+        //     } else {
+        //         hiddenField.style.display = "none";
+        //     }
+        // }
     </script>
 
     <!-- MAIN HEADER -->
@@ -43,17 +66,12 @@
                 <!-- /LOGO -->
 
                 <!-- SEARCH BAR -->
-                <div class="col-md-6">
+                <div class="col-md-6">.0
                     <div class="header-search">
-                        {{ form_start(form) }}
-                            <div>
-                                {{ form_widget(form.search, {'attr': {'class': 'input', 'placeholder': 'Search here'} }) }}
-                                {{ form_errors(form.search) }}
-
-                                {{ form_label(form.submit) }}
-                                {{ form_widget(form.submit, {'attr': {'class': 'search-btn'} }) }}
-                            </div>
-                        {{ form_end(form) }}
+                        <form action="{{ path('app_main_search') }}" name="search" method="post">
+                            <input id="search" name="search" class="input" placeholder="Search here">
+                            <button class="search-btn" type="submit">Search</button>
+                        </form>
                     </div>
                 </div>
                 <!-- /SEARCH BAR -->

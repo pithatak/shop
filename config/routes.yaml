@@ -7,3 +7,7 @@ controllers:
 app_main_page:
     path: /
     controller: App\Controller\DefaultController::index
+
+app_main_search:
+    path: /search
+    controller: App\Controller\DefaultController::searchAction

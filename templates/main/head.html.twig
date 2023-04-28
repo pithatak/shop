@@ -16,6 +16,103 @@
                 -webkit-box-orient: vertical;
                 white-space: normal;
             }
+            .panel-position {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 80vh;
+            }
+
+            .panel {
+                height: 400px;
+                width: 300px;
+                border-radius: 15px;
+                box-shadow: 0 8px 36px -16px gray;
+            }
+
+            .panel-container {
+                height: 300px;
+                padding: 2rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-between;
+                border: #15161D 2px solid;
+                color: #15161D;
+
+            }
+
+            .panel-input {
+                padding: 6px;
+                border-radius: 5px;
+                border: 1px solid gray;
+                outline: gray solid 0px;
+                transition: 0.1s;
+            }
+
+            .panel-inputs {
+                height: 100px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 2rem;
+            }
+
+            .panel-input:hover {
+                outline: gray solid 1px;
+            }
+
+            .panel-input:focus-visible {
+                outline: rgb(0, 110, 255) solid 2px;
+            }
+
+            .panel-title {
+                margin: 0;
+                font-size: 2rem;
+                color: rgb(0, 110, 255);
+                font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            }
+
+            .panel-continue {
+                background-color: transparent;
+                border: #15161D 2px solid;
+                color: #15161D;
+                border-radius: 5px;
+                padding: 10px;
+                width: 150px;
+                cursor: pointer;
+                text-transform: uppercase;
+                font-weight: bold;
+                transition: 0.4s;
+            }
+            .my-account {
+                position: relative;
+            }
+
+            .my-account .box-slide {
+                display: none;
+                position: absolute;
+                left: 1px;
+                right: 1px;
+                bottom: 1px;
+                padding: 15px;
+                background: #1e1f29;
+                -webkit-transform: translateY(0%);
+                -ms-transform: translateY(0%);
+                transform: translateY(0%);
+                -webkit-transition: 0.2s all;
+                transition: 0.2s all;
+                z-index: 2;
+                min-width: 150px
+            }
+
+            .my-account:hover .box-slide {
+                display: block;
+                -webkit-transform: translateY(100%);
+                -ms-transform: translateY(100%);
+                transform: translateY(100%);
+            }
         </style>
     {% endblock %}
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">

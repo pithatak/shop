@@ -1,2 +1,3 @@
 composer require sonata-project/admin-bundle
 composer require sonata-project/doctrine-orm-admin-bundle
+symfony/security-bundle
