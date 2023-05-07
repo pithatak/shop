@@ -91,7 +91,7 @@
 								<a class="review-link" href="#">10 Review(s) | Add your review</a>
 							</div>
 							<div>
-								{% if product.discount %}
+								{% if product.discount != 0%}
 									<h4 class="product-price"> ${{ product.discount }} <del class="product-old-price"> ${{ product.price }} </del></h4>
 								{% else %}
 									<h4 class="product-price"> ${{ product.price }} </h4>

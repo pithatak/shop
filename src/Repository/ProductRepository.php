@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @extends ServiceEntityRepository<Product>
@@ -14,6 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Product[]    findAll()
  * @method Product[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
+
 class ProductRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -39,6 +41,15 @@ class ProductRepository extends ServiceEntityRepository
         }
     }
 
+    public function findWithoutCategory(array $categoryName)
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb->leftJoin('p.category', 'c')
+            ->where($qb->expr()->notIn('c.name', $categoryName))
+            ->orderBy('p.name', 'ASC');
+
+        return $qb->getQuery()->getResult();
+    }
 //    /**
 //     * @return Product[] Returns an array of Product objects
 //     */

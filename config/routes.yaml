@@ -4,6 +4,10 @@ controllers:
         namespace: App\Controller
     type: attribute
 
+kernel:
+    resource: App\Kernel
+    type: attribute
+
 app_main_page:
     path: /
     controller: App\Controller\DefaultController::index

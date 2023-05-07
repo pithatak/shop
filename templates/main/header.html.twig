@@ -11,17 +11,17 @@
                 <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
                 {% if app.user.email is defined %}
                     <li class="my-account">
-                        <a href="#"><i class="fa fa-user-o"></i>{{ app.user.email }}</a>
+                        <a href="/account/show"><i class="fa fa-user-o"></i>{{ app.user.email }}</a>
                         <div class="box-slide">
-                            <p><a href="/logout" ><i class="fa fa-user-o"></i>Log out</a></p>
+                            <p><a href="/logout" ><i class="fa fa-remove"></i>Log out</a></p>
                         </div>
                     </li>
                 {% else %}
                     <li class="my-account">
-                        <a href="#" ><i class="fa fa-user-o"></i>My account</a>
+                        <a href="#" ><i class="fa fa-male"></i>My account</a>
                         <div class="box-slide">
                             <p><a href="/login" ><i class="fa fa-user-o"></i>Log in</a></p>
-                            <p><a href="/register" ><i class="fa fa-user-o"></i>Registration</a></p>
+                            <p><a href="/register" ><i class="fa fa-registered"></i>Registration</a></p>
                         </div>
                     </li>
                 {% endif %}
@@ -29,25 +29,6 @@
         </div>
     </div>
     <!-- /TOP HEADER -->
-
-    <script>
-        function copyText(elementId) {
-            var text = document.getElementById(elementId).textContent;
-            navigator.clipboard.writeText(text).then(function() {
-                alert("The text has been copied!");
-            }, function() {
-                alert("Couldn't copy text.");
-            });
-        }
-        // function toggle() {
-        //     var hiddenField = document.getElementById("hidden-field");
-        //     if (hiddenField.style.display === "none") {
-        //         hiddenField.style.display = "block";
-        //     } else {
-        //         hiddenField.style.display = "none";
-        //     }
-        // }
-    </script>
 
     <!-- MAIN HEADER -->
     <div id="header">
@@ -66,7 +47,7 @@
                 <!-- /LOGO -->
 
                 <!-- SEARCH BAR -->
-                <div class="col-md-6">.0
+                <div class="col-md-6">
                     <div class="header-search">
                         <form action="{{ path('app_main_search') }}" name="search" method="post">
                             <input id="search" name="search" class="input" placeholder="Search here">
@@ -150,3 +131,66 @@
     </div>
     <!-- /MAIN HEADER -->
 </header>
+
+{% block javascripts %}
+    <script>
+
+        function copyText(elementId) {
+            var text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                alert("The text has been copied!");
+            }, function() {
+                alert("Couldn't copy text.");
+            });
+        }
+        // function toggle() {
+        //     var hiddenField = document.getElementById("hidden-field");
+        //     if (hiddenField.style.display === "none") {
+        //         hiddenField.style.display = "block";
+        //     } else {
+        //         hiddenField.style.display = "none";
+        //     }
+        // }
+
+        function hideElementsByClass(className) {
+            var checkbox = document.getElementById(className);
+            var elements = document.getElementsByClassName(className);
+
+            for (var i = 0; i < elements.length; i++) {
+                if (checkbox.checked) {
+                    elements[i].style.display = "";
+                } else {
+                    elements[i].style.display = "none";
+                }
+            }
+        }
+
+        function deleteProduct(productId) {
+
+            $.ajax({
+                url:        '/product/delete/'+productId,
+                type:       'POST',
+                dataType:   'json',
+                async:      true,
+                data:  { productId: productId},
+
+                success: function(data) {
+
+                    var productInModal = document.getElementById(data.productName+'-'+productId);
+                    var productInPage = document.getElementById(productId+'-'+data.productName);
+
+                    productInModal.style.display = "none";
+                    productInPage.style.display = "none";
+
+                    alert('"'+data.productName + '" was deleted.');
+
+                },
+                error : function() {
+                    alert('Ajax request failed.');
+                }
+            });
+
+
+        }
+    </script>
+{% endblock %}

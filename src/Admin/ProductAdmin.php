@@ -3,6 +3,7 @@
 namespace App\Admin;
 
 use App\Entity\Category;
+use App\Entity\User;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -22,7 +23,11 @@ final class ProductAdmin extends AbstractAdmin
              ->add('category', EntityType::class, [
                  'class' => Category::class,
                  'choice_label' => 'name',
-             ]);
+             ])
+            ->add('user', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => 'email',
+            ]);
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagrid): void
@@ -37,13 +42,14 @@ final class ProductAdmin extends AbstractAdmin
         $list->addIdentifier('id')
              ->add('name')
              ->add('description')
-            ->add('category.name');
+             ->add('category.name')
+             ->add('user.email');
     }
 
-    protected function configureShowFields(ShowMapper $show): void
-    {
-        $show->add('name') ;
-    }
+//    protected function configureShowFields(ShowMapper $show): void
+//    {
+//        $show->add('name') ;
+//    }
 
     public function preValidate( object $object): void
     {
