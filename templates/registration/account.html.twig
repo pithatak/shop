@@ -102,7 +102,12 @@
                                         <div class="col-md-4 col-xs-6" id="{{ product.name }}-{{ product.id }}">
                                             <div class="product">
                                                 <div class="product-img">
-                                                    <img src="{{ asset('./style/img/logo.png') }}" alt="{{ product.name }} image">
+                                                    {% if product.brochureFilename != null %}
+                                                        {% set a =  brochures_directory~product.brochureFilename %}
+                                                        <img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ a }} image">
+                                                    {% else %}
+                                                        <img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image">
+                                                    {% endif %}
                                                     <div class="product-label">
                                                         <span class="new">NEW</span>
                                                     </div>

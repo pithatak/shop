@@ -11,7 +11,11 @@
                 <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
                 {% if app.user.email is defined %}
                     <li class="my-account">
-                        <a href="/account/show"><i class="fa fa-user-o"></i>{{ app.user.email }}</a>
+                        {% if 'ROLE_ADMIN' in app.user.roles %}
+                            <a href="/admin"><i class="fa fa-user-o"></i>Admin panel</a>
+                        {% else %}
+                            <a href="/account/show"><i class="fa fa-user-o"></i>{{ app.user.email }}</a>
+                        {% endif %}
                         <div class="box-slide">
                             <p><a href="/logout" ><i class="fa fa-remove"></i>Log out</a></p>
                         </div>
