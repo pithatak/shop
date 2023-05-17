@@ -24,6 +24,11 @@ services:
     # please note that last definitions always *replace* previous ones
     admin.product:
         class: App\Admin\ProductAdmin
+        arguments:
+            - 'my_admin'
+            - App\Entity\Product
+            - SonataAdminBundle:CRUD
+            - '@service_container'
         tags:
             - { name: sonata.admin, model_class: App\Entity\Product, manager_type: orm, label: Product }
 

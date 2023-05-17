@@ -36,19 +36,12 @@
 					<div class="col-md-5 col-md-push-2">
 						<div id="product-main-img">
 							<div class="product-preview">
-								<img src="./img/product01.png" alt="">
-							</div>
-
-							<div class="product-preview">
-								<img src="./img/product03.png" alt="">
-							</div>
-
-							<div class="product-preview">
-								<img src="./img/product06.png" alt="">
-							</div>
-
-							<div class="product-preview">
-								<img src="./img/product08.png" alt="">
+								{% if product.brochureFilename != null %}
+									{#{% set a =  brochures_directory~product.brochureFilename %}#}
+									<img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ brochures_directory~product.brochureFilename }} image">
+								{% else %}
+									<img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image">
+								{% endif %}
 							</div>
 						</div>
 					</div>
@@ -57,21 +50,21 @@
 					<!-- Product thumb imgs -->
 					<div class="col-md-2  col-md-pull-5">
 						<div id="product-imgs">
-							<div class="product-preview">
-								<img src="./img/product01.png" alt="">
-							</div>
+{#							<div class="product-preview">#}
+{#								<img src="./img/product03.png" alt="">#}
+{#							</div>#}
 
-							<div class="product-preview">
-								<img src="./img/product03.png" alt="">
-							</div>
+{#							<div class="product-preview">#}
+{#								<img src="./img/product03.png" alt="">#}
+{#							</div>#}
 
-							<div class="product-preview">
-								<img src="./img/product06.png" alt="">
-							</div>
+{#							<div class="product-preview">#}
+{#								<img src="./img/product06.png" alt="">#}
+{#							</div>#}
 
-							<div class="product-preview">
-								<img src="./img/product08.png" alt="">
-							</div>
+{#							<div class="product-preview">#}
+{#								<img src="./img/product08.png" alt="">#}
+{#							</div>#}
 						</div>
 					</div>
 					<!-- /Product thumb imgs -->
@@ -82,11 +75,15 @@
 							<h2 class="product-name">{{ product.name }}</h2>
 							<div>
 								<div class="product-rating">
-									<i class="fa fa-star"></i>
-									<i class="fa fa-star"></i>
-									<i class="fa fa-star"></i>
-									<i class="fa fa-star"></i>
-									<i class="fa fa-star-o"></i>
+									{% if product.raiting.counter is defined %}
+										<i class="fa fa-star-o"></i>
+									{% else %}
+										<i class="fa fa-star-o"></i>
+										<i class="fa fa-star-o"></i>
+										<i class="fa fa-star-o"></i>
+										<i class="fa fa-star-o"></i>
+										<i class="fa fa-star-o"></i>
+									{% endif %}
 								</div>
 								<a class="review-link" href="#">10 Review(s) | Add your review</a>
 							</div>

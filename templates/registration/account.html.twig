@@ -73,34 +73,25 @@
 
                     <!-- product tab content -->
                     <div class="tab-content">
-                        {% if message is defined %}
-                            <div class="col-md-12">
+                        <div class="col-md-12">
+                            {% if message is defined %}
                                 <div class="section-title text-center">
                                     <h3 class="title">{{ message }}</h3>
                                 </div>
+                            {% endif %}
+                            <div class="create-button-container">
+                                <button type="submit" class="create-button" data-toggle="modal" data-target="#createModal">Create new product</button>
                             </div>
-                        {% endif %}
+                        </div>
                         <!-- tab1  -->
                         <div id="tab1" class="tab-pane fade in active">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="col-md-4 col-xs-6" id="productRow">
-                                        <div class="product">
-                                            <div class="product-img">
-                                                <img src="{{ asset('./style/img/new_product.png') }}" alt="new_product">
-                                            </div>
-                                            <div class="product-body">
-                                                <p>
-                                                    {% include 'product/_form.html.twig' %}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <!-- products -->
                                     {% set products = app.user.products %}
                                     {% for product in products %}
                                         <div class="col-md-4 col-xs-6" id="{{ product.name }}-{{ product.id }}">
-                                            <div class="product">
+                                            <div id="product-{{ product.id }}" class="product">
                                                 <div class="product-img">
                                                     {% if product.brochureFilename != null %}
                                                         {% set a =  brochures_directory~product.brochureFilename %}
@@ -128,7 +119,7 @@
                                                         <i class="fa fa-star"></i>
                                                     </div>
                                                     <div class="product-btns">
-                                                        <a href="#" id ="deleteProduct"  ><i class="fa fa-edit"></i>Edit</a>
+                                                        <a href="#" id ="deleteProduct" onclick="editProduct('{{ product.id }}')" data-toggle="modal" data-target="#createModal"><i class="fa fa-edit"></i>Edit</a>
                                                         <a href="#" id ="deleteProduct" onclick="deleteProduct('{{ product.id }}')"><i class="fa fa-remove"></i>Delete</a>
                                                     </div>
                                                 </div>
@@ -342,10 +333,86 @@
 {% include 'main/footer.html.twig' %}
 <!-- /FOOTER -->
 
+<!-- MODAL -->
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="Create form" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            {#<div class="modal-header">
+
+            </div>#}
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <p>
+                    {% include 'product/_form.html.twig' %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL -->
+
 <!-- jQuery Plugins -->
 {% block javascripts %}
     <script>
+        function deleteProduct(productId) {
 
+            $.ajax({
+                url:        '/product/delete/'+productId,
+                type:       'POST',
+                dataType:   'json',
+                async:      true,
+                data:  { productId: productId},
+
+                success: function(data) {
+
+                    var productInModal = document.getElementById(data.productName+'-'+productId);
+                    var productInPage = document.getElementById(productId+'-'+data.productName);
+
+                    productInModal.style.display = "none";
+                    productInPage.style.display = "none";
+
+                    alert('"'+data.productName + '" - was deleted.');
+
+                },
+                error : function() {
+                    alert('Ajax request failed.');
+                }
+            });
+
+
+        }
+        function editProduct(productId) {
+
+            $.ajax({
+                url: '/product/edit/'+productId,
+                type:       'POST',
+                dataType:   'json',
+                async:      true,
+                data:  { productId: productId},
+
+                success: function(response) {
+
+                     var formss = document.getElementById("product-form");
+                    $('#createModal .modal-body p').html(response)
+                    // var formss = $('[name="product"]');
+                    var data = new FormData(formss);
+                    data.values("name", "Chris");
+                    console.log('response = ');
+                    console.log(response);
+                    console.log('data = ');
+                    console.log(data);
+                    console.log('form = ');
+                    console.log(formss);
+                },
+                error : function() {
+                    alert('Ajax request failed.');
+                }
+            });
+
+
+        }
     </script>
 {% endblock %}
 <script src="{{ asset('style/js/jquery.min.js') }}"></script>

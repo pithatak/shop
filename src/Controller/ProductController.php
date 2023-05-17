@@ -49,9 +49,11 @@ class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
+    #[Route('/edit/{id}', name: 'app_product_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Product $product, ProductRepository $productRepository): Response
     {
+        $product = $productRepository->find($request->get('productId'));
+
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
@@ -59,6 +61,14 @@ class ProductController extends AbstractController
             $productRepository->save($product, true);
 
             return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        if ($request->isXmlHttpRequest()) {
+
+            $response = new JsonResponse(['form' => $form, 'message' => 'Product deleted']);
+
+            return $response;
+
         }
 
         return $this->renderForm('product/edit.html.twig', [

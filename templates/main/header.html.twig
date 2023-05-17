@@ -147,14 +147,6 @@
                 alert("Couldn't copy text.");
             });
         }
-        // function toggle() {
-        //     var hiddenField = document.getElementById("hidden-field");
-        //     if (hiddenField.style.display === "none") {
-        //         hiddenField.style.display = "block";
-        //     } else {
-        //         hiddenField.style.display = "none";
-        //     }
-        // }
 
         function hideElementsByClass(className) {
             var checkbox = document.getElementById(className);
@@ -167,34 +159,6 @@
                     elements[i].style.display = "none";
                 }
             }
-        }
-
-        function deleteProduct(productId) {
-
-            $.ajax({
-                url:        '/product/delete/'+productId,
-                type:       'POST',
-                dataType:   'json',
-                async:      true,
-                data:  { productId: productId},
-
-                success: function(data) {
-
-                    var productInModal = document.getElementById(data.productName+'-'+productId);
-                    var productInPage = document.getElementById(productId+'-'+data.productName);
-
-                    productInModal.style.display = "none";
-                    productInPage.style.display = "none";
-
-                    alert('"'+data.productName + '" was deleted.');
-
-                },
-                error : function() {
-                    alert('Ajax request failed.');
-                }
-            });
-
-
         }
     </script>
 {% endblock %}

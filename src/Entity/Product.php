@@ -32,20 +32,27 @@ class Product
     #[ORM\ManyToOne(inversedBy: 'products')]
     private ?User $user = null;
 
-    #[ORM\Column(type: 'string')]
-    private ?string $brochureFilename;
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $brochureFilename = null;
 
-    public function getBrochureFilename(): string
+
+    /**
+     * @return string|null
+     */
+    public function getBrochureFilename(): ?string
     {
         return $this->brochureFilename;
     }
 
-    public function setBrochureFilename(string $brochureFilename): self
+    /**
+     * @param string|null $brochureFilename
+     */
+    public function setBrochureFilename(?string $brochureFilename): void
     {
         $this->brochureFilename = $brochureFilename;
-
-        return $this;
     }
+
+
 
     public function getId(): ?int
     {
@@ -123,6 +130,5 @@ class Product
 
         return $this;
     }
-
 
 }

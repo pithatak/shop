@@ -1,5 +1,4 @@
-<div class="panel-container">
-    {{ form_start(form, {'attr': {'id': 'product-form', 'action': path('show_account')}}) }}
+{{ form_start(form, {'attr': {'id': 'product-form', 'action': path('show_account')}}) }}
         <div class="form-group">
                 {{ form_label(form.name, null, {'label_attr': {'class': 'control-label'}}) }}
                 {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Name'}}) }}
@@ -25,6 +24,7 @@
                 {{ form_widget(form.discount, {'attr': {'class': 'form-control', 'placeholder': 'Discount'}}) }}
                 {{ form_errors(form.discount) }}
         </div>
-        <button type="submit" class="panel-continue">Create</button>
-    {{ form_end(form) }}
-</div>
+        <div class="create-button-container">
+                <button type="submit" class="panel-continue">Create</button>
+        </div>
+{{ form_end(form) }}
