@@ -1,6 +1,5 @@
-{{ form_start(form, {'attr': {'id': 'product-form', 'action': path('show_account')}}) }}
+{{ form_start(form, {'attr': {'id': 'product-form'}}) }}
         <div class="form-group">
-                {{ form_label(form.name, null, {'label_attr': {'class': 'control-label'}}) }}
                 {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Name'}}) }}
                 {{ form_errors(form.name) }}
         </div>
@@ -25,6 +24,10 @@
                 {{ form_errors(form.discount) }}
         </div>
         <div class="create-button-container">
-                <button type="submit" class="panel-continue">Create</button>
+                {% if edit == true %}
+                        <button id="editProductButton" data-id="{{ productId }}" class="panel-continue">Edit</button>
+                {% else %}
+                        <button id="createProductButton" type="submit" class="panel-continue">Create</button>
+                {% endif %}
         </div>
 {{ form_end(form) }}

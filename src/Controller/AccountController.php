@@ -57,4 +57,36 @@ class AccountController extends AbstractController
             'form' => $form
         ]);
     }
+
+    #[Route('/get/product/form', name: 'get_product_form', methods: ['GET', 'PUT'])]
+    public function getForm(Request $request = null, ProductRepository $productRepository){
+
+        $edit = false;
+
+        if($request->get('productId') !== null){
+            $product = $productRepository->find($request->get('productId'));
+            $edit = true;
+        }else {
+            $product = new Product();
+        }
+
+        $form = $this->createForm(ProductType::class, $product);
+        $form->handleRequest($request);
+/*
+        dump(' $form->createView() = ',  $form->createView());
+        dump('parameters = ', $this->getParameter('brochures_directory'));
+        $filePath = $this->getParameter('brochures_directory')."/".$product->getBrochureFilename();
+        dump('filepath =  ', $filePath);
+        $file = new File($filePath);
+        dump('$file =  ', $file);
+        $form->get('brochure')->setData($file);
+        dump('$$form->get(brochure)=  ', $form->get('brochure'));
+        exit;*/
+
+        return $this->render('product/_form.html.twig', [
+            'form' => $form->createView(),
+            'edit' => $edit,
+            'productId' => $product->getId()
+        ]);
+    }
 }

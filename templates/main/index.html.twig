@@ -101,95 +101,39 @@
 
                 <!-- aside Widget -->
                 <div class="aside">
-                    <h3 class="aside-title">Brand</h3>
-                    <div class="checkbox-filter">
-                        <div class="input-checkbox">
-                            <input type="checkbox" id="brand-1">
-                            <label for="brand-1">
-                                <span></span>
-                                SAMSUNG
-                                <small>(578)</small>
-                            </label>
+                    <h3 class="aside-title">Top rating</h3>
+                    {% set sortedProducts = productRepository.findAll() %}
+                    {% for product in sortedProducts | sort((a, b) => b.averageRating <=> a.averageRating) | slice(0,5)%}
+                        <div class="product-widget">
+                            <div class="product-img">
+                                {% if product.brochureFilename != null %}
+                                    {% set a =  brochures_directory~product.brochureFilename %}
+                                    <img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ a }} image" style="max-height: 195px">
+                                {% else %}
+                                    <img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image">
+                                {% endif %}
+                            </div>
+                            <div class="product-body">
+                                <h3 class="product-name cut-and-hide"><a href="{{ path('app_product_show', { id: product.id }) }}"><span class="name-product">{{ product.name }}</span></a></h3>
+                                {% if product.discount != 0 %}
+                                    <p class="product-category">{{ product.category.name }}</p>
+                                    <h4 class="product-price"> $<span class="price-product">{{ product.discount }} </span><del class="product-old-price"> ${{ product.price }} </del></h4>
+                                {% else %}
+                                    <h4 class="product-price"> $<span class="price-product">{{ product.price }} </span></h4>
+                                {% endif %}
+                                <div class="product-rating">
+                                    {% for rating in 1..5 %}
+                                        {% if rating <= product.getAverageRating() %}
+                                            <i class="fa fa-star"></i>
+                                        {% else %}
+                                            <i class="fa fa-star-o"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
                         </div>
-                        <div class="input-checkbox">
-                            <input type="checkbox" id="brand-2">
-                            <label for="brand-2">
-                                <span></span>
-                                LG
-                                <small>(125)</small>
-                            </label>
-                        </div>
-                        <div class="input-checkbox">
-                            <input type="checkbox" id="brand-3">
-                            <label for="brand-3">
-                                <span></span>
-                                SONY
-                                <small>(755)</small>
-                            </label>
-                        </div>
-                        <div class="input-checkbox">
-                            <input type="checkbox" id="brand-4">
-                            <label for="brand-4">
-                                <span></span>
-                                SAMSUNG
-                                <small>(578)</small>
-                            </label>
-                        </div>
-                        <div class="input-checkbox">
-                            <input type="checkbox" id="brand-5">
-                            <label for="brand-5">
-                                <span></span>
-                                LG
-                                <small>(125)</small>
-                            </label>
-                        </div>
-                        <div class="input-checkbox">
-                            <input type="checkbox" id="brand-6">
-                            <label for="brand-6">
-                                <span></span>
-                                SONY
-                                <small>(755)</small>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <!-- /aside Widget -->
-
-                <!-- aside Widget -->
-                <div class="aside">
-                    <h3 class="aside-title">Top selling</h3>
-                    <div class="product-widget">
-                        <div class="product-img">
-                            <img src="./img/product01.png" alt="">
-                        </div>
-                        <div class="product-body">
-                            <p class="product-category">Category</p>
-                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                        </div>
-                    </div>
-
-                    <div class="product-widget">
-                        <div class="product-img">
-                            <img src="./img/product02.png" alt="">
-                        </div>
-                        <div class="product-body">
-                            <p class="product-category">Category</p>
-                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                        </div>
-                    </div>
-
-                    <div class="product-widget">
-                        <div class="product-img">
-                            <img src="./img/product03.png" alt="">
-                        </div>
-                        <div class="product-body">
-                            <p class="product-category">Category</p>
-                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                        </div>
-                    </div>
+                        <hr>
+                    {% endfor %}
                 </div>
                 <!-- /aside Widget -->
             </div>
@@ -239,7 +183,7 @@
                                 <div class="product-img">
                                     {% if product.brochureFilename != null %}
                                         {% set a =  brochures_directory~product.brochureFilename %}
-                                        <img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ a }} image">
+                                        <img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ a }} image" style="max-height: 195px">
                                     {% else %}
                                         <img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image">
                                     {% endif %}
@@ -260,21 +204,25 @@
                                         <h4 class="product-price"> $<span class="price-product">{{ product.price }} </span></h4>
                                     {% endif %}
                                     <div class="product-rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
+                                        {% for rating in 1..5 %}
+                                            {% if rating <= product.getAverageRating() %}
+                                                <i class="fa fa-star"></i>
+                                            {% else %}
+                                                <i class="fa fa-star-o"></i>
+                                            {% endif %}
+                                        {% endfor %}
                                     </div>
-                                    <div class="product-btns">
+                                    {#<div class="product-btns">
                                         <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
                                         <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
                                         <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                                    </div>#}
+                                </div>
+                                {% if app.user.email is defined %}
+                                    <div class="add-to-cart" id="{{ product.id }}-in-cart">
+                                        <button class="add-to-cart-btn" data-id="{{ product.id }}"><i class="fa fa-shopping-cart"></i> add to cart</button>
                                     </div>
-                                </div>
-                                <div class="add-to-cart">
-                                    <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
-                                </div>
+                                {% endif %}
                             </div>
                         </div>
                     {% endfor %}
@@ -308,48 +256,76 @@
 <!-- /FOOTER -->
 <!-- jQuery Plugins -->
 {% block javascripts %}
+    <script src="{{ asset('style/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('style/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('style/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('style/js/slick.min.js') }}"></script>
+    <script src="{{ asset('style/js/nouislider.min.js') }}"></script>
+    <script src="{{ asset('style/js/jquery.zoom.min.js') }}"></script>
+    <script src="{{ asset('style/js/main.js') }}"></script>
+
     <script>
-        function SortProductByPrice() {
+        $(document).ready(function (){
+            $(function (){
+                $('body').on('click', '.add-to-cart-btn', function (){
+                    let id = $(this).attr('data-id');
+                    $.ajax({
+                        url: '{{ path('product_add_cart') }}',
+                        method: 'POST',
+                        data:  { productId: id},
+                        success: function(response) {
+                            let data = JSON.parse(response);
+                            let userCartCount = data[0].userCartCount;
+                            let cartCount = document.getElementById('cartCount');
+                            cartCount.innerHTML = userCartCount;
 
-            var products = [];
-            {% for product in search !=0 ? search.Object : productRepository.findAll() %}
-            var item = {
-                id: {{ product.id }},
-                name: "{{ product.name }}",
-                price: {{ product.price }},
-                discount: {{ product.discount }}
-            };
-            products.push(item);
-            {% endfor %}
+                            let productInCart = document.getElementById(id + '-in-cart');
+                            productInCart.innerHTML  = '<button class="btn-success" id="buttonAddTOCart" data-id=' + id + '><i class="fa fa-check"></i> ADDED TO CART</button>';
+                        },
+                        error : function() {
+                            alert('Ajax request failed.');
+                        }
+                    });
+                }).on('click', '.btn-success', function (){
+                    let id = $(this).attr('data-id');
+                    $.ajax({
+                        url: '{{ path('product_unset_cart') }}',
+                        method: 'POST',
+                        data: { productId: id},
+                        success: function (response){
+                            let data = JSON.parse(response);
+                            let userCartCount = data[0].userCartCount;
+                            let cartCount = document.getElementById('cartCount');
+                            cartCount.innerHTML = userCartCount;
 
-            var inputMax = parseInt(document.getElementById("price-max").value);
-            var inputMin = parseInt(document.getElementById("price-min").value);
+                            let productInCart = document.getElementById(id + '-in-cart');
+                            productInCart.innerHTML = '<button class="add-to-cart-btn" data-id=' + id +'><i class="fa fa-shopping-cart"></i> add to cart</button>';
+                        },
+                        error: function (){
+                            alert('Ajax request failed.');
+                        }
+                    })
+                })
+            })
+            $(function (){
+                let userCart = [];
 
-            for (var i = 0; i < products.length; i++) {
+                {% for uC in (app.user.email is defined ? app.user.carts : 0) %}
+                    userCart.push({
+                        productId: {{ uC.product.id }}
+                    });
+                {% endfor %}
 
-                var variable = document.getElementById(products[i].id+'-'+products[i].name);
-                if( products[i].discount > 0){
-                    if(!(products[i].discount < inputMin  || products[i].discount > inputMax)){
-                        variable.style.display = "";
-                    }else {
-                        variable.style.display = "none";
-                    }
-                }else if(!(products[i].price < inputMin  || products[i].price > inputMax)) {
-                    variable.style.display = "";
-                }else {
-                    variable.style.display = "none";
+                for (let i = 0 ; i < userCart.length; i++){
+                    let productInCart = document.getElementById(userCart[i].productId + '-in-cart');
+                    $('.add-to-cart #5-in-cart button').empty();
+                    productInCart.innerHTML = '<button class="btn-success" id="buttonAddTOCart" data-id=' + userCart[i].productId + '><i class="fa fa-check"></i> ADDED TO CART</button>';
                 }
-            }
-        }
+            })
+        });
     </script>
 {% endblock %}
-<script src="{{ asset('style/js/jquery.min.js') }}"></script>
-<script src="{{ asset('style/js/jquery.min.js') }}"></script>
-<script src="{{ asset('style/js/bootstrap.min.js') }}"></script>
-<script src="{{ asset('style/js/slick.min.js') }}"></script>
-<script src="{{ asset('style/js/nouislider.min.js') }}"></script>
-<script src="{{ asset('style/js/jquery.zoom.min.js') }}"></script>
-<script src="{{ asset('style/js/main.js') }}"></script>
+
 
 </body>
 </html>

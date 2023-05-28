@@ -50,6 +50,16 @@ class ProductRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function getReviews(array $products)
+    {
+        $reviews = [];
+        foreach ($products as $product){
+            $reviews[] = $product->getReview();
+        }
+
+        return $reviews;
+    }
 //    /**
 //     * @return Product[] Returns an array of Product objects
 //     */

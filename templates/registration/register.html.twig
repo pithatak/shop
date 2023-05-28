@@ -20,12 +20,28 @@
                                 <h3>Registration</h3>
                                 <div class="panel-container">
                                     {{ form_start(registrationForm) }}
-                                            {{ form_row(registrationForm.email, {'attr': {'class': 'input', 'type': 'email' } }) }}
-                                            {{ form_row(registrationForm.plainPassword, {'attr': {'class': 'input'} }) }}
-                                            {{ form_row(registrationForm.username, {'attr': {'class': 'input'} }) }}
-                                            {{ form_row(registrationForm.phone, {'attr': {'class': 'input'} }) }}
-                                            <span style="padding: 5px">{{ form_row(registrationForm.agreeTerms) }}</span>
-                                            <button  type="submit" class="panel-continue">Sing up</button>
+                                    <div class="form-group">
+                                        {{ form_row(registrationForm.email, {'attr': {'class': 'input', 'type': 'email', 'autocomplete': "email" } }) }}
+                                        {{ form_errors(registrationForm.email) }}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form_row(registrationForm.plainPassword, {'attr': {'class': 'input'} }) }}
+                                        {{ form_errors(registrationForm.plainPassword) }}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form_row(registrationForm.username, {'attr': {'class': 'input'} }) }}
+                                        {{ form_errors(registrationForm.username) }}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form_row(registrationForm.phone, {'attr': {'class': 'input'} }) }}
+                                        {{ form_errors(registrationForm.phone) }}
+                                    </div>
+                                    <div class="form-group">
+                                        <span style="padding: 5px">{{ form_row(registrationForm.agreeTerms) }}</span>
+                                    </div>
+                                    <div class="create-button-container">
+                                        <button  type="submit" class="panel-continue">Sing up</button>
+                                    </div>
                                     {{ form_end(registrationForm) }}
                                 </div>
                             </div>

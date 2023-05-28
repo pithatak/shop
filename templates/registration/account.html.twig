@@ -65,9 +65,8 @@
                 <div id="product-tab">
                     <!-- product tab nav -->
                     <ul class="tab-nav">
-                        <li class="active"><a data-toggle="tab" href="#tab1">You`re products</a></li>
-                        <li><a data-toggle="tab" href="#tab2">Details</a></li>
-                        <li><a data-toggle="tab" href="#tab3">Reviews (3)</a></li>
+                        <li class="active"><a data-toggle="tab" href="#tab1">You`re products({{ app.user.products | length }}) </a></li>
+                        <li><a data-toggle="tab" href="#tab2">Reviews of your products:</a></li>
                     </ul>
                     <!-- /product tab nav -->
 
@@ -75,18 +74,18 @@
                     <div class="tab-content">
                         <div class="col-md-12">
                             {% if message is defined %}
-                                <div class="section-title text-center">
+                                <div class="section-title text-center alert alert-success">
                                     <h3 class="title">{{ message }}</h3>
                                 </div>
                             {% endif %}
-                            <div class="create-button-container">
-                                <button type="submit" class="create-button" data-toggle="modal" data-target="#createModal">Create new product</button>
-                            </div>
                         </div>
                         <!-- tab1  -->
                         <div id="tab1" class="tab-pane fade in active">
                             <div class="row">
                                 <div class="col-md-12">
+                                    <div class="create-button-container">
+                                        <button id="getCreateProductForm" type="submit" class="create-button" data-toggle="modal" data-target="#createModal">Create new product</button>
+                                    </div>
                                     <!-- products -->
                                     {% set products = app.user.products %}
                                     {% for product in products %}
@@ -95,7 +94,7 @@
                                                 <div class="product-img">
                                                     {% if product.brochureFilename != null %}
                                                         {% set a =  brochures_directory~product.brochureFilename %}
-                                                        <img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ a }} image">
+                                                        <img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ a }} image" style="max-height: 195px">
                                                     {% else %}
                                                         <img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image">
                                                     {% endif %}
@@ -119,7 +118,7 @@
                                                         <i class="fa fa-star"></i>
                                                     </div>
                                                     <div class="product-btns">
-                                                        <a href="#" id ="deleteProduct" onclick="editProduct('{{ product.id }}')" data-toggle="modal" data-target="#createModal"><i class="fa fa-edit"></i>Edit</a>
+                                                        <a href="#" id ="deleteProduct" onclick="getEditProductForm('{{ product.id }}')" data-toggle="modal" data-target="#createModal"><i class="fa fa-edit"></i>Edit</a>
                                                         <a href="#" id ="deleteProduct" onclick="deleteProduct('{{ product.id }}')"><i class="fa fa-remove"></i>Delete</a>
                                                     </div>
                                                 </div>
@@ -133,190 +132,65 @@
 
                         <!-- tab2  -->
                         <div id="tab2" class="tab-pane fade in">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                            <div class="row" style="margin-left: 15%">
+                                <!-- Reviews -->
+                                {% for product in products %}
+                                    {% for review in product.getReviews() %}
+                                        <div class="col-md-6" style="width: 70%">
+                                            <div id="reviews">
+                                                <ul class="reviews">
+                                                    <li>
+                                                        <div class="review-heading">
+                                                            <h5 class="name">{{ review.user.username }}</h5>
+                                                            <p class="date">{{ review.date | date("F j, Y, H:i:s") }}</p>
+                                                            {% for rating in 1..5 %}
+                                                                {% if rating <= product.getAverageRating %}
+                                                                    <i class="fa fa-star"></i>
+                                                                {% else %}
+                                                                    <i class="fa fa-star-o"></i>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </div>
+                                                        <div class="review-body">
+                                                            <p>{{ review.comment }}</p>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <!-- /Reviews -->
+
+                                        <!-- Products -->
+                                        <div class="col-md-1">
+                                            <div class="product"  style="margin: 0px">
+                                                <div class="product-body" style="padding: 10px 0px 0px 0px">
+                                                    <h3 class="product-name cut-and-hide"><a href="{{ path('app_product_show', { id: product.id }) }}"><span class="name-product">{{ product.name }}</span></a></h3>
+                                                </div>
+                                                <div class="product-img">
+                                                    {% if product.brochureFilename != null %}
+                                                        {% set a =  brochures_directory~product.brochureFilename %}
+                                                        <img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ a }} image" style="max-height: 195px">
+                                                    {% else %}
+                                                        <img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image">
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                                <div class="col-md-6">
+                                    <ul class="reviews-pagination">
+                                        <li class="active">1</li>
+                                        <li><a href="#">2</a></li>
+                                        <li><a href="#">3</a></li>
+                                        <li><a href="#">4</a></li>
+                                        <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+                                    </ul>
                                 </div>
+                                <!-- /Products -->
                             </div>
                         </div>
                         <!-- /tab2  -->
-
-                        <!-- tab3  -->
-                        <div id="tab3" class="tab-pane fade in">
-                            <div class="row">
-                                <!-- Rating -->
-                                <div class="col-md-3">
-                                    <div id="rating">
-                                        <div class="rating-avg">
-                                            <span>4.5</span>
-                                            <div class="rating-stars">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star-o"></i>
-                                            </div>
-                                        </div>
-                                        <ul class="rating">
-                                            <li>
-                                                <div class="rating-stars">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                                <div class="rating-progress">
-                                                    <div style="width: 80%;"></div>
-                                                </div>
-                                                <span class="sum">3</span>
-                                            </li>
-                                            <li>
-                                                <div class="rating-stars">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                </div>
-                                                <div class="rating-progress">
-                                                    <div style="width: 60%;"></div>
-                                                </div>
-                                                <span class="sum">2</span>
-                                            </li>
-                                            <li>
-                                                <div class="rating-stars">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                </div>
-                                                <div class="rating-progress">
-                                                    <div></div>
-                                                </div>
-                                                <span class="sum">0</span>
-                                            </li>
-                                            <li>
-                                                <div class="rating-stars">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                </div>
-                                                <div class="rating-progress">
-                                                    <div></div>
-                                                </div>
-                                                <span class="sum">0</span>
-                                            </li>
-                                            <li>
-                                                <div class="rating-stars">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                </div>
-                                                <div class="rating-progress">
-                                                    <div></div>
-                                                </div>
-                                                <span class="sum">0</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- /Rating -->
-
-                                <!-- Reviews -->
-                                <div class="col-md-6">
-                                    <div id="reviews">
-                                        <ul class="reviews">
-                                            <li>
-                                                <div class="review-heading">
-                                                    <h5 class="name">John</h5>
-                                                    <p class="date">27 DEC 2018, 8:0 PM</p>
-                                                    <div class="review-rating">
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star-o empty"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="review-body">
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</p>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="review-heading">
-                                                    <h5 class="name">John</h5>
-                                                    <p class="date">27 DEC 2018, 8:0 PM</p>
-                                                    <div class="review-rating">
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star-o empty"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="review-body">
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</p>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="review-heading">
-                                                    <h5 class="name">John</h5>
-                                                    <p class="date">27 DEC 2018, 8:0 PM</p>
-                                                    <div class="review-rating">
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star-o empty"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="review-body">
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</p>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <ul class="reviews-pagination">
-                                            <li class="active">1</li>
-                                            <li><a href="#">2</a></li>
-                                            <li><a href="#">3</a></li>
-                                            <li><a href="#">4</a></li>
-                                            <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- /Reviews -->
-
-                                <!-- Review Form -->
-                                <div class="col-md-3">
-                                    <div id="review-form">
-                                        <form class="review-form">
-                                            <input class="input" type="text" placeholder="Your Name">
-                                            <input class="input" type="email" placeholder="Your Email">
-                                            <textarea class="input" placeholder="Your Review"></textarea>
-                                            <div class="input-rating">
-                                                <span>Your Rating: </span>
-                                                <div class="stars">
-                                                    <input id="star5" name="rating" value="5" type="radio"><label for="star5"></label>
-                                                    <input id="star4" name="rating" value="4" type="radio"><label for="star4"></label>
-                                                    <input id="star3" name="rating" value="3" type="radio"><label for="star3"></label>
-                                                    <input id="star2" name="rating" value="2" type="radio"><label for="star2"></label>
-                                                    <input id="star1" name="rating" value="1" type="radio"><label for="star1"></label>
-                                                </div>
-                                            </div>
-                                            <button class="primary-btn">Submit</button>
-                                        </form>
-                                    </div>
-                                </div>
-                                <!-- /Review Form -->
-                            </div>
-                        </div>
-                        <!-- /tab3  -->
                     </div>
                     <!-- /product tab content  -->
                 </div>
@@ -345,7 +219,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <p>
-                    {% include 'product/_form.html.twig' %}
+
                 </p>
             </div>
         </div>
@@ -355,9 +229,15 @@
 
 <!-- jQuery Plugins -->
 {% block javascripts %}
+    <script src="{{ asset('style/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('style/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('style/js/slick.min.js') }}"></script>
+    <script src="{{ asset('style/js/nouislider.min.js') }}"></script>
+    <script src="{{ asset('style/js/jquery.zoom.min.js') }}"></script>
+    <script src="{{ asset('style/js/main.js') }}"></script>
+
     <script>
         function deleteProduct(productId) {
-
             $.ajax({
                 url:        '/product/delete/'+productId,
                 type:       'POST',
@@ -366,61 +246,82 @@
                 data:  { productId: productId},
 
                 success: function(data) {
-
-                    var productInModal = document.getElementById(data.productName+'-'+productId);
-                    var productInPage = document.getElementById(productId+'-'+data.productName);
-
+                    let productInModal = document.getElementById(data.productName+'-'+productId);
                     productInModal.style.display = "none";
-                    productInPage.style.display = "none";
-
-                    alert('"'+data.productName + '" - was deleted.');
-
                 },
                 error : function() {
                     alert('Ajax request failed.');
                 }
             });
-
-
         }
-        function editProduct(productId) {
 
+        function getEditProductForm(productId) {
+            console.log("darowenki edit");
+            console.log("productId = , " + productId);
             $.ajax({
-                url: '/product/edit/'+productId,
-                type:       'POST',
-                dataType:   'json',
-                async:      true,
+                url: '{{ path('get_product_form') }}',
+                type: 'PUT',
                 data:  { productId: productId},
 
                 success: function(response) {
+                    console.log('success');
+                    console.log('response = ' + response);
+                    // $('#createModal .modal-body p').empty();
+                    $('#createModal .modal-body p').html(response);
 
-                     var formss = document.getElementById("product-form");
-                    $('#createModal .modal-body p').html(response)
-                    // var formss = $('[name="product"]');
-                    var data = new FormData(formss);
-                    data.values("name", "Chris");
-                    console.log('response = ');
-                    console.log(response);
-                    console.log('data = ');
-                    console.log(data);
-                    console.log('form = ');
-                    console.log(formss);
                 },
                 error : function() {
                     alert('Ajax request failed.');
                 }
             });
-
-
         }
+
+        $(document).ready(function () {
+            $('#createModal').on('hidden.bs.modal', function () {
+                console.log("uuuuuuu");
+                $('#createModal .modal-body p').empty();
+            });
+            $('button#getCreateProductForm').on('click', function () {
+                console.log("darowenki buly");
+
+                $.ajax({
+                    url: '{{ path('get_product_form') }}',
+                    success: function (response) {
+                        console.log('success');
+                        // $('#createModal .modal-body p').empty();
+                        $('#createModal .modal-body p').html(response);
+                        // var formss = $('[name="product"]');
+
+                        console.log('response = ');
+
+                    },
+                    error: function () {
+                        alert('Ajax request failed.');
+                    }
+                });
+            });
+            $(function () {
+                $('body').on('click', '#editProductButton', function (){
+                    console.log("darowenki buly editProductButton");
+                    var productId = $(this).attr('data-id');
+                    var TEST = '{{ path('app_product_edit', {'id': '__PRODUCT_ID__'}) }}'.replace('__PRODUCT_ID__', productId);
+                    console.log("TEST = " + TEST);
+                    $.ajax({
+                        url: '{{ path('app_product_edit', {'id': '__PRODUCT_ID__'}) }}'.replace('__PRODUCT_ID__', productId),
+                        method: 'POST',
+                        success: function () {
+                            console.log('success');
+                            alert('success');
+                        },
+                        error: function () {
+                            alert('Ajax request failed.');
+                        }
+                    });
+                });
+            });
+        });
     </script>
 {% endblock %}
-<script src="{{ asset('style/js/jquery.min.js') }}"></script>
-<script src="{{ asset('style/js/bootstrap.min.js') }}"></script>
-<script src="{{ asset('style/js/slick.min.js') }}"></script>
-<script src="{{ asset('style/js/nouislider.min.js') }}"></script>
-<script src="{{ asset('style/js/jquery.zoom.min.js') }}"></script>
-<script src="{{ asset('style/js/main.js') }}"></script>
 
 </body>
 </html>
