@@ -25,7 +25,9 @@ class ReviewType extends AbstractType
                 'attr' => ['class' => 'input-select'],
                 'label' => 'Chose you`re rating',
             ])
-            ->add('comment', TextType::class)
+            ->add('comment', TextType::class, [
+                'required' => false,
+            ])
         ;
     }
 

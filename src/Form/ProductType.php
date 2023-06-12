@@ -6,12 +6,13 @@ use App\Entity\Category;
 use App\Entity\Product;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Validator\Constraints\File;
 
 class ProductType extends AbstractType
@@ -37,16 +38,21 @@ class ProductType extends AbstractType
                 'class' => Category::class,
                 'choice_label' => 'name',
             ])
-            ->add('price', IntegerType::class, [
+            ->add('price', MoneyType::class, [
                 'required' => true,
+                'currency' => '',
                 'constraints' => [
                     new NotBlank()
                 ],
                 'label' => 'Price',
             ])
-            ->add('discount', IntegerType::class, [
+            ->add('discount', MoneyType::class, [
                 'required' => false,
+                'currency' => '',
                 'label' => 'Discount',
+            ])
+            ->add('id',  HiddenType::class, [
+                'required' => false,
             ])
             ->add('brochure', FileType::class, [
                 'label' => 'Brochure (PDF file)',

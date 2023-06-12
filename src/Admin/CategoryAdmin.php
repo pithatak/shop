@@ -9,8 +9,8 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Entity\Product;
+
 final class CategoryAdmin extends AbstractAdmin
 {
     protected function configureFormFields(FormMapper $form): void

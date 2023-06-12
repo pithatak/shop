@@ -67,6 +67,7 @@
                     <ul class="tab-nav">
                         <li class="active"><a data-toggle="tab" href="#tab1">You`re products({{ app.user.products | length }}) </a></li>
                         <li><a data-toggle="tab" href="#tab2">Reviews of your products:</a></li>
+                        <li><a data-toggle="tab" href="#tab3">You`re orders({{ app.user.orders | length }}) </a></li>
                     </ul>
                     <!-- /product tab nav -->
 
@@ -89,17 +90,20 @@
                                     <!-- products -->
                                     {% set products = app.user.products %}
                                     {% for product in products %}
-                                        <div class="col-md-4 col-xs-6" id="{{ product.name }}-{{ product.id }}">
+                                        <div class="col-md-4 col-xs-6" id="{{ product.name }}-{{ product.id }}" style="min-height: 500px">
                                             <div id="product-{{ product.id }}" class="product">
                                                 <div class="product-img">
                                                     {% if product.brochureFilename != null %}
-                                                        {% set a =  brochures_directory~product.brochureFilename %}
-                                                        <img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ a }} image" style="max-height: 195px">
+                                                        <img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ product.name }}-image" class="img-product">
                                                     {% else %}
                                                         <img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image">
                                                     {% endif %}
                                                     <div class="product-label">
-                                                        <span class="new">NEW</span>
+                                                        {% if product.user.username is defined %}
+                                                            <span class="new">{{ product.user.username }}</span>
+                                                        {% else %}
+                                                            <span class="new">Admin</span>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                                 <div class="product-body">
@@ -118,8 +122,8 @@
                                                         <i class="fa fa-star"></i>
                                                     </div>
                                                     <div class="product-btns">
-                                                        <a href="#" id ="deleteProduct" onclick="getEditProductForm('{{ product.id }}')" data-toggle="modal" data-target="#createModal"><i class="fa fa-edit"></i>Edit</a>
-                                                        <a href="#" id ="deleteProduct" onclick="deleteProduct('{{ product.id }}')"><i class="fa fa-remove"></i>Delete</a>
+                                                        <a href="#" onclick="getEditProductForm('{{ product.id }}')" data-toggle="modal" data-target="#createModal"><i class="fa fa-edit"></i>Edit</a>
+                                                        <a href="#" id ="deleteProduct" data-id="{{ product.id }}"><i class="fa fa-remove"></i>Delete</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -136,10 +140,11 @@
                                 <!-- Reviews -->
                                 {% for product in products %}
                                     {% for review in product.getReviews() %}
-                                        <div class="col-md-6" style="width: 70%">
+                                        <div class="col-md-8">
                                             <div id="reviews">
+                                                <img src="{{ asset('style/img/account.png') }}" width="50" height="50" style="float: left; padding-right: 5px" alt="account image">
                                                 <ul class="reviews">
-                                                    <li>
+                                                    <li style="display: flex">
                                                         <div class="review-heading">
                                                             <h5 class="name">{{ review.user.username }}</h5>
                                                             <p class="date">{{ review.date | date("F j, Y, H:i:s") }}</p>
@@ -161,24 +166,18 @@
                                         <!-- /Reviews -->
 
                                         <!-- Products -->
-                                        <div class="col-md-1">
-                                            <div class="product"  style="margin: 0px">
-                                                <div class="product-body" style="padding: 10px 0px 0px 0px">
-                                                    <h3 class="product-name cut-and-hide"><a href="{{ path('app_product_show', { id: product.id }) }}"><span class="name-product">{{ product.name }}</span></a></h3>
-                                                </div>
-                                                <div class="product-img">
-                                                    {% if product.brochureFilename != null %}
-                                                        {% set a =  brochures_directory~product.brochureFilename %}
-                                                        <img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ a }} image" style="max-height: 195px">
-                                                    {% else %}
-                                                        <img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image">
-                                                    {% endif %}
-                                                </div>
+                                        <div class="col-md-2">
+                                            <div class="product-img">
+                                                {% if product.brochureFilename != null %}
+                                                    <a href="{{ path('app_product_show', { id: product.id }) }}"><img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ product.name }}-image" class="img-product" style="max-height: 90px"></a>
+                                                {% else %}
+                                                    <a href="{{ path('app_product_show', { id: product.id }) }}"><img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image"></a>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     {% endfor %}
                                 {% endfor %}
-                                <div class="col-md-6">
+                                {#<div class="col-md-6">
                                     <ul class="reviews-pagination">
                                         <li class="active">1</li>
                                         <li><a href="#">2</a></li>
@@ -186,11 +185,39 @@
                                         <li><a href="#">4</a></li>
                                         <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
                                     </ul>
-                                </div>
+                                </div>#}
                                 <!-- /Products -->
                             </div>
                         </div>
                         <!-- /tab2  -->
+
+                        <!-- tab3  -->
+                        <div id="tab3" class="tab-pane fade in">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {% for order in app.user.orders %}
+                                        <div class="col-md-4 col-xs-6">
+                                            <div id="product" class="product">
+                                                <div class="product-body" style="padding: 10px 0px 0px 0px">
+                                                    <h3 class="product-name cut-and-hide">Total price: {{ order.totalPrice }}</h3> 
+                                                </div>
+                                                <div class="product-body">
+                                                    <p class="date">{{ order.date | date("F j, Y, H:i:s") }}</p>
+                                                    <p class="paid">Paid for:
+                                                        {% if order.paidFor %}
+                                                        Yes <i class="fa fa-check"></i>
+                                                        {% else %}
+                                                            No <i class="fa fa-remove"></i>
+                                                        {% endif %}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /tab3  -->
                     </div>
                     <!-- /product tab content  -->
                 </div>
@@ -229,44 +256,15 @@
 
 <!-- jQuery Plugins -->
 {% block javascripts %}
-    <script src="{{ asset('style/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('style/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('style/js/slick.min.js') }}"></script>
-    <script src="{{ asset('style/js/nouislider.min.js') }}"></script>
-    <script src="{{ asset('style/js/jquery.zoom.min.js') }}"></script>
-    <script src="{{ asset('style/js/main.js') }}"></script>
 
     <script>
-        function deleteProduct(productId) {
-            $.ajax({
-                url:        '/product/delete/'+productId,
-                type:       'POST',
-                dataType:   'json',
-                async:      true,
-                data:  { productId: productId},
-
-                success: function(data) {
-                    let productInModal = document.getElementById(data.productName+'-'+productId);
-                    productInModal.style.display = "none";
-                },
-                error : function() {
-                    alert('Ajax request failed.');
-                }
-            });
-        }
-
         function getEditProductForm(productId) {
-            console.log("darowenki edit");
-            console.log("productId = , " + productId);
             $.ajax({
                 url: '{{ path('get_product_form') }}',
                 type: 'PUT',
                 data:  { productId: productId},
 
                 success: function(response) {
-                    console.log('success');
-                    console.log('response = ' + response);
-                    // $('#createModal .modal-body p').empty();
                     $('#createModal .modal-body p').html(response);
 
                 },
@@ -278,22 +276,13 @@
 
         $(document).ready(function () {
             $('#createModal').on('hidden.bs.modal', function () {
-                console.log("uuuuuuu");
                 $('#createModal .modal-body p').empty();
             });
             $('button#getCreateProductForm').on('click', function () {
-                console.log("darowenki buly");
-
                 $.ajax({
                     url: '{{ path('get_product_form') }}',
                     success: function (response) {
-                        console.log('success');
-                        // $('#createModal .modal-body p').empty();
                         $('#createModal .modal-body p').html(response);
-                        // var formss = $('[name="product"]');
-
-                        console.log('response = ');
-
                     },
                     error: function () {
                         alert('Ajax request failed.');
@@ -301,23 +290,43 @@
                 });
             });
             $(function () {
-                $('body').on('click', '#editProductButton', function (){
-                    console.log("darowenki buly editProductButton");
+                $('body').on('click', '#deleteProduct', function (){
                     var productId = $(this).attr('data-id');
-                    var TEST = '{{ path('app_product_edit', {'id': '__PRODUCT_ID__'}) }}'.replace('__PRODUCT_ID__', productId);
-                    console.log("TEST = " + TEST);
+
                     $.ajax({
-                        url: '{{ path('app_product_edit', {'id': '__PRODUCT_ID__'}) }}'.replace('__PRODUCT_ID__', productId),
-                        method: 'POST',
-                        success: function () {
-                            console.log('success');
-                            alert('success');
+                        url:        '/product/delete/'+productId,
+                        type:       'POST',
+                        dataType:   'json',
+                        async:      true,
+                        data:  { productId: productId},
+
+                        success: function(data) {
+                            let productInModal = document.getElementById(data.productName+'-'+productId);
+                            productInModal.style.display = "none";
                         },
-                        error: function () {
+                        error : function() {
                             alert('Ajax request failed.');
                         }
                     });
                 });
+                let subtotal = 0;
+                let userCart = [];
+
+                {% for uC in (app.user.email is defined ? app.user.carts : 0) %}
+                userCart.push({
+                    productId: {{ uC.product.id }},
+                    price: {{ uC.product.discount == 0 ?  uC.product.price : uC.product.discount }},
+                });
+
+                {% endfor %}
+
+                for (let i = 0 ; i < userCart.length; i++){
+                    subtotal+= userCart[i].price;
+                }
+
+                let cartSummary = document.getElementById('cart-summary');
+
+                cartSummary.innerHTML = '<small>' + userCart.length + ' Item(s) selected</small><h5>SUBTOTAL: $' + subtotal + '</h5>';
             });
         });
     </script>

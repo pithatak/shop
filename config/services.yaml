@@ -44,7 +44,12 @@ services:
         tags:
             - { name: sonata.admin, model_class: App\Entity\User, manager_type: orm, label: User }
 
-    admin.test:
-        class: App\Admin\CategoryAdmin
+    admin.review:
+        class: App\Admin\ReviewAdmin
         tags:
-            - { name: sonata.admin, model_class: App\Entity\Test, manager_type: orm, label: Test }
+            - { name: sonata.admin, model_class: App\Entity\Review, manager_type: orm, label: Review }
+
+    admin.order:
+          class: App\Admin\OrderAdmin
+          tags:
+              - { name: sonata.admin, model_class: App\Entity\Order, manager_type: orm, label: Order }

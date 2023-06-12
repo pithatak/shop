@@ -44,7 +44,9 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
             ->add('phone')
-            ->add('username')
+            ->add('username', null, [
+                'required' => true
+            ])
         ;
     }
 

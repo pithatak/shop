@@ -74,35 +74,35 @@
                             </a>
                             <div class="cart-dropdown">
                                 <div class="cart-list">
+                                    {% for cart in app.user.email is defined ? app.user.carts : 0 %}
                                     <div class="product-widget">
                                         <div class="product-img">
-                                            <img src="{{ asset('./style/img/product01.png') }}" alt="">
+                                            {% if cart.product.brochureFilename != null %}
+                                                {% set a =  brochures_directory~cart.product.brochureFilename %}
+                                                <img src="{{ asset(brochures_directory~cart.product.brochureFilename) }}" alt="{{ a }} image" style="max-height: 195px">
+                                            {% else %}
+                                                <img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image">
+                                            {% endif %}
                                         </div>
                                         <div class="product-body">
-                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                                            <h4 class="product-price"><span class="qty">1x</span>$980.00</h4>
+                                            <h3 class="product-name cut-and-hide"><a href="{{ path('app_product_show', { id: cart.product.id }) }}"><span class="name-product">{{ cart.product.name }}</span></a></h3>
+                                            {% if cart.product.discount != 0 %}
+                                                <h4 class="product-price"> $<span class="price-product">{{ cart.product.discount }} </span><del class="product-old-price"> ${{ cart.product.price }} </del></h4>
+                                            {% else %}
+                                                <h4 class="product-price"> $<span class="price-product">{{ cart.product.price }} </span></h4>
+                                            {% endif %}
                                         </div>
-                                        <button class="delete"><i class="fa fa-close"></i></button>
+                                        <button class="delete"><i class="fa f-aclose"></i></button>
                                     </div>
-
-                                    <div class="product-widget">
-                                        <div class="product-img">
-                                            <img src="{{ asset('./style/img/product02.png') }}" alt="">
-                                        </div>
-                                        <div class="product-body">
-                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                                            <h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
-                                        </div>
-                                        <button class="delete"><i class="fa fa-close"></i></button>
-                                    </div>
+                                    {% endfor %}
                                 </div>
-                                <div class="cart-summary">
+                                <div class="cart-summary" id="cart-summary">
                                     <small>3 Item(s) selected</small>
                                     <h5>SUBTOTAL: $2940.00</h5>
                                 </div>
                                 <div class="cart-btns">
-                                    <a href="#">View Cart</a>
-                                    <a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+                                    {#<a href="#">View Cart</a>#}
+                                    <a href="{{ path('product_order_cart') }}">Buy all <i class="fa fa-arrow-circle-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -128,8 +128,14 @@
 </header>
 
 {% block javascripts %}
-    <script>
+    <script src="{{ asset('style/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('style/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('style/js/slick.min.js') }}"></script>
+    <script src="{{ asset('style/js/nouislider.min.js') }}"></script>
+    <script src="{{ asset('style/js/jquery.zoom.min.js') }}"></script>
+    <script src="{{ asset('style/js/main.js') }}"></script>
 
+    <script>
         function copyText(elementId) {
             var text = document.getElementById(elementId).textContent;
             navigator.clipboard.writeText(text).then(function() {
@@ -139,17 +145,32 @@
             });
         }
 
-        function hideElementsByClass(className) {
-            var checkbox = document.getElementById(className);
-            var elements = document.getElementsByClassName(className);
+        $(document).ready(function (){
+            $(function (){
+                let subtotal = 0;
+                let userCart = [];
 
-            for (var i = 0; i < elements.length; i++) {
-                if (checkbox.checked) {
-                    elements[i].style.display = "";
-                } else {
-                    elements[i].style.display = "none";
+                {% for uC in (app.user.email is defined ? app.user.carts : 0) %}
+                userCart.push({
+                    productId: {{ uC.product.id }},
+                    price: {{ uC.product.discount == 0 ?  uC.product.price : uC.product.discount }},
+                });
+                {% endfor %}
+                let productInCart
+                for (let i = 0 ; i < userCart.length; i++){
+                    productInCart = document.getElementById(userCart[i].productId + '-in-cart');
+                    $('.add-to-cart #5-in-cart button').empty();
+                    productInCart.innerHTML = '<button class="added-to-cart" id="buttonAddTOCart" data-id='
+                        + userCart[i].productId + ' data-price='
+                        + userCart[i].price + '><i class="fa fa-check"></i> ADDED TO CART</button>'
+                        + '<button class="buy-btn" ><i class="fa fa-shopping-cart"></i> Buy</button>';
+                    subtotal+= userCart[i].price;
                 }
-            }
-        }
+
+                let cartSummary = document.getElementById('cart-summary');
+
+                cartSummary.innerHTML = '<small>' + userCart.length + ' Item(s) selected</small><h5>SUBTOTAL: $' + subtotal + '</h5>';
+            })
+        });
     </script>
 {% endblock %}

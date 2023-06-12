@@ -1,4 +1,4 @@
-{{ form_start(form, {'attr': {'id': 'review-form', 'action': path('product_change_rating'), 'method': 'POST'}}) }}
+{{ form_start(form, {'attr': {'id': 'review-form', 'action': path('product_change_rating', { id: product.id}), 'method': 'POST'}}) }}
 <div class="form-group">
     {{ form_label(form.counter, null, {'label_attr': {'class': 'control-label'}}) }}
     {{ form_widget(form.counter, {'attr': {'class': 'form-control', 'placeholder': 'Name'}}) }}

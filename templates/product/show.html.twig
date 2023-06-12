@@ -38,11 +38,13 @@
 					<div class="col-md-5 col-md-push-2">
 						<div id="product-main-img">
 							<div class="product-preview">
-								{% if product.brochureFilename != null %}
-									<img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ brochures_directory~product.brochureFilename }} image" style="max-height: 195px">
-								{% else %}
-									<img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image">
-								{% endif %}
+								<div class="img-div">
+									{% if product.brochureFilename != null %}
+										<img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ product.name }}-image" class="img-product">
+									{% else %}
+										<img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image">
+									{% endif %}
+								</div>
 							</div>
 						</div>
 					</div>
@@ -96,6 +98,11 @@
 							{% if app.user.email is defined %}
 								<div class="add-to-cart" id="{{ product.id }}-in-cart">
 									<button class="add-to-cart-btn" data-id="{{ product.id }}"><i class="fa fa-shopping-cart"></i> add to cart</button>
+									<a href="{{ path('product_order_cart', {"productId": product.id}) }}"><button class="buy-btn" id="buyButton"><i class="fa fa-shopping-cart"></i> Buy</button></a>
+								</div>
+							{% else %}
+								<div class="add-to-cart">
+									<a href="{{ path('product_order_cart', {"productId": product.id}) }}"><button class="buy-btn" id="buyButton"><i class="fa fa-shopping-cart"></i> Buy</button></a>
 								</div>
 							{% endif %}
 
@@ -242,7 +249,7 @@
 																{% endfor %}
 															</div>
 															<div class="review-body">
-																<p> {{ review.comment != null ?  review.comment : 'ahaha' }}</p>
+																<p> {{ review.comment != null ?  review.comment : '' }}</p>
 															</div>
 														</li>
 													{% else %}
@@ -285,12 +292,11 @@
 												</div>
 											{% else %}
 												{% for product in product.user.getProducts() %}
-													<div class="col-md-4 col-xs-6 {{ product.price }} {{ product.category.name }}" id="{{ product.id }}-{{ product.name }}">
+													<div class="col-md-4 col-xs-6" id="{{ product.id }}-{{ product.name }}" style="min-height: 500px">
 														<div class="product">
 															<div class="product-img">
 																{% if product.brochureFilename != null %}
-																	{% set a =  brochures_directory~product.brochureFilename %}
-																	<img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ a }} image" style="max-height: 195px">
+																	<img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ product.name }}-image" class="img-product">
 																{% else %}
 																	<img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image">
 																{% endif %}
@@ -358,13 +364,6 @@
 		{% include 'main/footer.html.twig' %}
 		<!-- /FOOTER -->
 		{% block javascripts %}
-			<script src="{{ asset('style/js/jquery.min.js') }}"></script>
-			<script src="{{ asset('style/js/bootstrap.min.js') }}"></script>
-			<script src="{{ asset('style/js/slick.min.js') }}"></script>
-			<script src="{{ asset('style/js/nouislider.min.js') }}"></script>
-			<script src="{{ asset('style/js/jquery.zoom.min.js') }}"></script>
-			<script src="{{ asset('style/js/main.js') }}"></script>
-
 			<script>
 				$(document).ready(function (){
 					$(function (){
@@ -382,7 +381,8 @@
 									cartCount.innerHTML = userCartCount;
 
 									let productInCart = document.getElementById(id + '-in-cart');
-									productInCart.innerHTML  = '<button class="btn-success" id="buttonAddTOCart" data-id=' + id + '><i class="fa fa-check"></i> ADDED TO CART</button>';
+									productInCart.innerHTML  = '<button class="added-to-cart" id="buttonAddTOCart" data-id=' + id + '><i class="fa fa-check"></i> ADDED TO CART</button>'
+									+ '<button class="buy-btn" ><i class="fa fa-shopping-cart"></i> Buy</button>';
 								},
 								error : function() {
 									alert('Ajax request failed.');
@@ -402,29 +402,40 @@
 									cartCount.innerHTML = userCartCount;
 
 									let productInCart = document.getElementById(id + '-in-cart');
-									productInCart.innerHTML = '<button class="add-to-cart-btn" data-id=' + id +'><i class="fa fa-shopping-cart"></i> add to cart</button>';
+									productInCart.innerHTML = '<button class="add-to-cart-btn" data-id=' + id +'><i class="fa fa-shopping-cart"></i> add to cart</button>'
+									+ '<button class="buy-btn" ><i class="fa fa-shopping-cart"></i> Buy</button>';
 
 								},
 								error: function (){
 									alert('Ajax request failed.');
 								}
 							})
-						})
+						});
 					})
 					$(function (){
+						let subtotal = 0;
 						let userCart = [];
 
 						{% for uC in (app.user.email is defined ? app.user.carts : 0) %}
 						userCart.push({
-							productId: {{ uC.product.id }}
+							productId: {{ uC.product.id }},
+							price: {{ uC.product.discount == 0 ?  uC.product.price : uC.product.discount }},
 						});
 						{% endfor %}
-
+						let productInCart
 						for (let i = 0 ; i < userCart.length; i++){
-							let productInCart = document.getElementById(userCart[i].productId + '-in-cart');
+							productInCart = document.getElementById(userCart[i].productId + '-in-cart');
 							$('.add-to-cart #5-in-cart button').empty();
-							productInCart.innerHTML = '<button class="btn-success" id="buttonAddTOCart" data-id=' + userCart[i].productId + '><i class="fa fa-check"></i> ADDED TO CART</button>';
+							productInCart.innerHTML = '<button class="added-to-cart" id="buttonAddTOCart" data-id='
+									+ userCart[i].productId + ' data-price='
+									+ userCart[i].price + '><i class="fa fa-check"></i> ADDED TO CART</button>'
+									+ '<button class="buy-btn" ><i class="fa fa-shopping-cart"></i> Buy</button>';
+							subtotal+= userCart[i].price;
 						}
+
+						let cartSummary = document.getElementById('cart-summary');
+
+						cartSummary.innerHTML = '<small>' + userCart.length + ' Item(s) selected</small><h5>SUBTOTAL: $' + subtotal + '</h5>';
 					})
 				});
 			</script>

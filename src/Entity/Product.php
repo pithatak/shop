@@ -41,16 +41,20 @@ class Product
     #[ORM\OneToMany(mappedBy: 'Product', targetEntity: Review::class)]
     private Collection $reviews;
 
-    #[ORM\Column(type: Types::FLOAT)]
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?int $averageRating = null;
 
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Cart::class)]
     private Collection $carts;
 
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: OrderProducts::class)]
+    private Collection $orderProducts;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
         $this->carts = new ArrayCollection();
+        $this->orderProducts = new ArrayCollection();
     }
 
 
@@ -75,6 +79,13 @@ class Product
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getName(): ?string
@@ -127,7 +138,7 @@ class Product
 
     public function getDiscount(): ?string
     {
-        return $this->discount;
+        return empty($this->discount) ? 0 : $this->discount;
     }
 
     public function setDiscount(?string $discount): self
@@ -215,6 +226,36 @@ class Product
             // set the owning side to null (unless already changed)
             if ($cart->getProduct() === $this) {
                 $cart->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, OrderProducts>
+     */
+    public function getOrderProducts(): Collection
+    {
+        return $this->orderProducts;
+    }
+
+    public function addOrderProduct(OrderProducts $orderProduct): self
+    {
+        if (!$this->orderProducts->contains($orderProduct)) {
+            $this->orderProducts->add($orderProduct);
+            $orderProduct->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrderProduct(OrderProducts $orderProduct): self
+    {
+        if ($this->orderProducts->removeElement($orderProduct)) {
+            // set the owning side to null (unless already changed)
+            if ($orderProduct->getProduct() === $this) {
+                $orderProduct->setProduct(null);
             }
         }
 

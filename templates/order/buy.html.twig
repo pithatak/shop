@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- HEAD-->
+{% include 'main/head.html.twig' %}
+<!-- HEAD-->
+<body>
+<!-- HEADER -->
+{% include 'main/header.html.twig' %}
+<!-- /HEADER -->
+
+<!-- SECTION -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div id="message" class="section-title text-center alert alert-success" style="visibility: hidden;">
+                <h3 class="title"> Success!</h3>
+            </div>
+            <!-- STORE -->
+            <div class="panel-position">
+                <div class="panel">
+                    <!-- /form Details -->
+
+                    <h5 class="modal-title text-center" id="staticBackdropLabel">
+                        <img src="{{ asset('./style/img/paymentsMethods.png') }}" alt="test image" style="max-width: 100%; max-height: 100%;">
+                    </h5>
+                    <div class="form-header">
+                        <h4 class="title">Credit/Debit Card detail</h4>
+                    </div>
+                    <form name="search" method="post">
+                        <div class="form-body">
+                            <input type="text" class="card-number" placeholder="Card Number">
+                            <div class="date-field">
+                                <div class="month">
+                                    <select name="Month">
+                                        <option value="">Month</option>
+                                        <option value="january">January</option>
+                                        <option value="february">February</option>
+                                        <option value="march">March</option>
+                                        <option value="april">April</option>
+                                        <option value="may">May</option>
+                                        <option value="june">June</option>
+                                        <option value="july">July</option>
+                                        <option value="august">August</option>
+                                        <option value="september">September</option>
+                                        <option value="october">October</option>
+                                        <option value="november">November</option>
+                                        <option value="december">December</option>
+                                    </select>
+                                </div>
+                                <div class="year">
+                                    <select name="Year">
+                                        <option value="">Year</option>
+                                        <option value="2016">2016</option>
+                                        <option value="2017">2017</option>
+                                        <option value="2018">2018</option>
+                                        <option value="2019">2019</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2022">2022</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2024">2024</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="card-verification">
+                                <div class="cvv-input">
+                                    <input type="password" placeholder="CVV">
+                                </div>
+                                <div class="cvv-details">
+                                    <p>3 or 4 digits usually found <br> on the signature strip</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                    <div style="padding-left: 27%;">
+                        <button id="buyButton" class="panel-continue">Buy</button>
+                    </div>
+                    <hr>
+                    <!-- /form Details -->
+                </div>
+            </div>
+            <!-- /store products -->
+
+            <!-- /STORE -->
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /SECTION -->
+<!-- /SECTION -->
+
+<!-- FOOTER -->
+{% include 'main/footer.html.twig' %}
+<!-- /FOOTER -->
+<!-- jQuery Plugins -->
+{% block javascripts %}
+
+    <script>
+
+        $(document).ready(function (){
+            $('button#buyButton').on('click', function () {
+                let user = '{{ app.user.username is defined ? app.user.username : 'anonymous' }}';
+                $.ajax({
+                    url: '{{ path('product_buy') }}',
+                    type: "POST",
+                    dataType: "json",
+                    data: {"orderId": {{ orderId }}},
+                    success: function(data){
+                        let messageElement = document.getElementById('message');
+                        messageElement.style.visibility = 'visible';
+                        if(user === 'anonymous'){
+                            window.location.href = "{{ path('app_main_index') }}";
+                        }else {
+                            window.location.href = "{{ path('show_account') }}";
+                        }
+                    },
+                    error: function(error){
+                        alert('Ajax request failed.');
+                    }
+                });
+            });
+
+        });
+    </script>
+{% endblock %}
+</body>
+</html>
+
+{% block title %}Register{% endblock %}
+

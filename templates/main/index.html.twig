@@ -8,50 +8,6 @@
 {% include 'main/header.html.twig' %}
 <!-- /HEADER -->
 
-{#<!-- NAVIGATION -->#}
-{#<nav id="navigation">#}
-{#    <!-- container -->#}
-{#    <div class="container">#}
-{#        <!-- responsive-nav -->#}
-{#        <div id="responsive-nav">#}
-{#            <!-- NAV -->#}
-{#            <ul class="main-nav nav navbar-nav">#}
-{#                <li class="active"><a href="#">Home</a></li>#}
-{#                <li><a href="#">Hot Deals</a></li>#}
-{#                <li><a href="#">Categories</a></li>#}
-{#                <li><a href="#">Laptops</a></li>#}
-{#                <li><a href="#">Smartphones</a></li>#}
-{#                <li><a href="#">Cameras</a></li>#}
-{#                <li><a href="#">Accessories</a></li>#}
-{#            </ul>#}
-{#            <!-- /NAV -->#}
-{#        </div>#}
-{#        <!-- /responsive-nav -->#}
-{#    </div>#}
-{#    <!-- /container -->#}
-{#</nav>#}
-{#<!-- /NAVIGATION -->#}
-
-{#<!-- BREADCRUMB -->#}
-{#<div id="breadcrumb" class="section">#}
-{#    <!-- container -->#}
-{#    <div class="container">#}
-{#        <!-- row -->#}
-{#        <div class="row">#}
-{#            <div class="col-md-12">#}
-{#                <h3 class="breadcrumb-header">Regular Page</h3>#}
-{#                <ul class="breadcrumb-tree">#}
-{#                    <li><a href="#">Home</a></li>#}
-{#                    <li class="active">Blank</li>#}
-{#                </ul>#}
-{#            </div>#}
-{#        </div>#}
-{#        <!-- /row -->#}
-{#    </div>#}
-{#    <!-- /container -->#}
-{#</div>#}
-{#<!-- /BREADCRUMB -->#}
-
 <!-- SECTION -->
 <!-- SECTION -->
 <div class="section">
@@ -107,16 +63,15 @@
                         <div class="product-widget">
                             <div class="product-img">
                                 {% if product.brochureFilename != null %}
-                                    {% set a =  brochures_directory~product.brochureFilename %}
-                                    <img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ a }} image" style="max-height: 195px">
+                                    <img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ product.name }}-image" class="img-product">
                                 {% else %}
                                     <img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image">
                                 {% endif %}
                             </div>
                             <div class="product-body">
                                 <h3 class="product-name cut-and-hide"><a href="{{ path('app_product_show', { id: product.id }) }}"><span class="name-product">{{ product.name }}</span></a></h3>
+                                <p class="product-category">{{ product.category.name }}</p>
                                 {% if product.discount != 0 %}
-                                    <p class="product-category">{{ product.category.name }}</p>
                                     <h4 class="product-price"> $<span class="price-product">{{ product.discount }} </span><del class="product-old-price"> ${{ product.price }} </del></h4>
                                 {% else %}
                                     <h4 class="product-price"> $<span class="price-product">{{ product.price }} </span></h4>
@@ -146,24 +101,24 @@
                     <div class="store-sort">
                         <label>
                             Sort By:
-                            <select class="input-select">
-                                <option value="0">Popular</option>
+                            <select id="sortSelect" class="input-select">
+                                <option value="0">Price</option>
                                 <option value="1">Position</option>
                             </select>
                         </label>
 
                         <label>
                             Show:
-                            <select class="input-select">
-                                <option value="0">20</option>
-                                <option value="1">50</option>
+                            <select id="maxProductsCount" class="input-select">
+                                <option value="15">15</option>
+                                <option value="30">30</option>
                             </select>
                         </label>
                     </div>
-                    <ul class="store-grid">
+{#                    <ul class="store-grid">
                         <li class="active"><i class="fa fa-th"></i></li>
                         <li><a href="#"><i class="fa fa-th-list"></i></a></li>
-                    </ul>
+                    </ul>#}
                     {% if search != null %}
                     <div class="col-md-12">
                         <div class="section-title text-center">
@@ -178,20 +133,19 @@
                 <div class="row">
                     <!-- product -->
                     {% for product in search !=0 ? search.Object : productRepository.findAll() %}
-                        <div class="col-md-4 col-xs-6 {{ product.price }} {{ product.category.name }}" id="{{ product.id }}-{{ product.name }}">
+                        <div class="col-md-4 col-xs-6 {{ product.price }} {{ product.category.name }}" id="{{ product.id }}-{{ product.user.id }}" data-price="{{ product.price }}" style="min-height: 420px">
                             <div class="product">
                                 <div class="product-img">
                                     {% if product.brochureFilename != null %}
-                                        {% set a =  brochures_directory~product.brochureFilename %}
-                                        <img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ a }} image" style="max-height: 195px">
+                                        <img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ product.name }}-image" class="img-product">
                                     {% else %}
                                         <img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image">
                                     {% endif %}
                                     <div class="product-label">
                                         {% if product.user.username is defined %}
-                                        <span class="new">{{ product.user.username }}</span>
+                                            <span class="new">{{ product.user.username }}</span>
                                         {% else %}
-                                        <span class="new">Admin</span>
+                                            <span class="new">Admin</span>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -220,7 +174,7 @@
                                 </div>
                                 {% if app.user.email is defined %}
                                     <div class="add-to-cart" id="{{ product.id }}-in-cart">
-                                        <button class="add-to-cart-btn" data-id="{{ product.id }}"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                                        <button class="add-to-cart-btn" data-id="{{ product.id }}" data-price="{{ product.discount == 0 ?  product.price : product.discount }}"><i class="fa fa-shopping-cart"></i> add to cart</button>
                                     </div>
                                 {% endif %}
                             </div>
@@ -230,15 +184,7 @@
                 <!-- /store products -->
 
                 <!-- store bottom filter -->
-                <div class="store-filter clearfix">
-                    <span class="store-qty">Showing 20-100 products</span>
-                    <ul class="store-pagination">
-                        <li class="active">1</li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
-                    </ul>
+                <div class="store-filter clearfix" id="store-filter">
                 </div>
                 <!-- /store bottom filter -->
             </div>
@@ -256,19 +202,52 @@
 <!-- /FOOTER -->
 <!-- jQuery Plugins -->
 {% block javascripts %}
-    <script src="{{ asset('style/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('style/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('style/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('style/js/slick.min.js') }}"></script>
-    <script src="{{ asset('style/js/nouislider.min.js') }}"></script>
-    <script src="{{ asset('style/js/jquery.zoom.min.js') }}"></script>
-    <script src="{{ asset('style/js/main.js') }}"></script>
-
     <script>
+        function SortProductByPrice() {
+//start
+            var products = [];
+            {% for product in search !=0 ? search.Object : productRepository.findAll() %}
+            var item = {
+                id: {{ product.id }},
+                userId: {{ product.user.id }},
+                price: {{ product.discount == 0 ?  product.price : product.discount }},
+            };
+            products.push(item);
+            {% endfor %}
+            var inputMax = parseFloat(document.getElementById("price-max").value);
+            var inputMin = parseFloat(document.getElementById("price-min").value);
+
+            for (let i = 0; i < products.length; i++) {
+
+                var variable = document.getElementById(products[i].id+'-'+products[i].userId);
+                if(!(products[i].price < inputMin  || products[i].price > inputMax)){
+                    variable.style.display = 'block';
+                }else {
+                    variable.style.display = 'none';
+                }
+            }
+        }
+
+        function hideElementsByClass(className) {
+
+            var checkbox = document.getElementById(className);
+            var elements = document.getElementsByClassName(className);
+
+            for (var i = 0; i < elements.length; i++) {
+                if (checkbox.checked) {
+                    elements[i].style.display = "";
+                } else {
+                    elements[i].style.display = "none";
+                }
+            }
+        }
+
         $(document).ready(function (){
             $(function (){
                 $('body').on('click', '.add-to-cart-btn', function (){
                     let id = $(this).attr('data-id');
+                    let price = $(this).attr('data-price');
+
                     $.ajax({
                         url: '{{ path('product_add_cart') }}',
                         method: 'POST',
@@ -279,8 +258,14 @@
                             let cartCount = document.getElementById('cartCount');
                             cartCount.innerHTML = userCartCount;
 
+                            userCartLength = userCartLength + 1;
+                            subtotal = subtotal + parseInt(price);
+
+                            let cartSummary = document.getElementById('cart-summary');
+                            cartSummary.innerHTML = '<small>' + userCartLength + ' Item(s) selected</small><h5>SUBTOTAL: $' + subtotal + '</h5>';
+
                             let productInCart = document.getElementById(id + '-in-cart');
-                            productInCart.innerHTML  = '<button class="btn-success" id="buttonAddTOCart" data-id=' + id + '><i class="fa fa-check"></i> ADDED TO CART</button>';
+                            productInCart.innerHTML  = '<button class="added-to-cart" id="buttonAddTOCart" data-id=' + id + '><i class="fa fa-check"></i> ADDED TO CART</button>';
                         },
                         error : function() {
                             alert('Ajax request failed.');
@@ -288,6 +273,8 @@
                     });
                 }).on('click', '.btn-success', function (){
                     let id = $(this).attr('data-id');
+                    let price = $(this).attr('data-price');
+
                     $.ajax({
                         url: '{{ path('product_unset_cart') }}',
                         method: 'POST',
@@ -298,6 +285,12 @@
                             let cartCount = document.getElementById('cartCount');
                             cartCount.innerHTML = userCartCount;
 
+                            userCartLength = userCartLength - 1;
+                            subtotal = subtotal - parseInt(price);
+
+                            let cartSummary = document.getElementById('cart-summary');
+                            cartSummary.innerHTML = '<small>' + userCartLength + ' Item(s) selected</small><h5>SUBTOTAL: $' + subtotal + '</h5>';
+
                             let productInCart = document.getElementById(id + '-in-cart');
                             productInCart.innerHTML = '<button class="add-to-cart-btn" data-id=' + id +'><i class="fa fa-shopping-cart"></i> add to cart</button>';
                         },
@@ -307,20 +300,98 @@
                     })
                 })
             })
-            $(function (){
-                let userCart = [];
 
-                {% for uC in (app.user.email is defined ? app.user.carts : 0) %}
-                    userCart.push({
-                        productId: {{ uC.product.id }}
-                    });
+            const selectElement = document.getElementById('sortSelect');
+
+            selectElement.addEventListener('change', function() {
+                const selectedValue = this.value;
+                let products = [];
+                {% for product in sortedProducts %}
+                products.push({
+                    productId: {{ product.id }},
+                    price: {{ product.discount == 0 ?  product.price : product.discount }},
+                    name: '{{ product.name }}'
+                });
                 {% endfor %}
+                if(selectedValue === '0'){
+                    var sortedUserCart = products.slice().sort(function(a, b) {
+                        return parseInt(b.price) - parseInt(a.price);
+                    });
+                    let productDiv = document.getElementsByClassName('col-md-4 col-xs-6')
 
-                for (let i = 0 ; i < userCart.length; i++){
+                    for (let i = 0; i < productDiv.length; i++){
+                        productDiv[i].style.display = 'none';
+                    }
+                    for (let i = 0; i < sortedUserCart.length; i++){
+                        let productDivId = document.getElementById(sortedUserCart[i].productId + '-' + sortedUserCart[i].name);
+
+                        productDivId.style.display = 'block';
+                    }
+                }
+
+            });
+
+            const maxProductAtPage = document.getElementById('maxProductsCount');
+
+            maxProductAtPage.addEventListener('change', function() {
+                const selectedValue = this.value; // Получение выбранного значения option
+
+                var elements = document.getElementsByClassName('col-md-4');
+
+                for (var i = 0; i < elements.length; i++) {
+                    elements[i].style.display = 'block';
+                }
+                for (var j = parseInt(selectedValue); j < elements.length; j++) {
+                    elements[j].style.display = 'none';
+                }
+
+            });
+
+            let subtotal = 0;
+            let userCart = [];
+
+            {% for uC in (app.user.email is defined ? app.user.carts : 0) %}
+            userCart.push({
+                productId: {{ uC.product.id }},
+                price: {{ uC.product.discount == 0 ?  uC.product.price : uC.product.discount }},
+            });
+
+            {% endfor %}
+            let userCartLength = userCart.length;
+            $(function (){
+/*                for (let i = 0 ; i < userCartLength; i++){
                     let productInCart = document.getElementById(userCart[i].productId + '-in-cart');
                     $('.add-to-cart #5-in-cart button').empty();
-                    productInCart.innerHTML = '<button class="btn-success" id="buttonAddTOCart" data-id=' + userCart[i].productId + '><i class="fa fa-check"></i> ADDED TO CART</button>';
+                    productInCart.innerHTML = '<button class="added-to-cart" id="buttonAddTOCart" data-id='
+                        + userCart[i].productId + ' data-price='
+                        + userCart[i].price + '><i class="fa fa-check"></i> ADDED TO CART</button>';
+                    subtotal+= userCart[i].price;
+
                 }
+                let cartSummary = document.getElementById('cart-summary');
+
+                cartSummary.innerHTML = '<small>' + userCartLength + ' Item(s) selected</small><h5>SUBTOTAL: $' + subtotal + '</h5>';*/
+                <!-- /max product count -->
+                let elements = document.getElementsByClassName('col-md-4');
+                for (let j = 15; j < elements.length; j++) {
+                    elements[j].style.display = 'none';
+                }
+                let storeFilter = document.getElementById('store-filter');
+
+                let productCOunter = {{ sortedProducts | length }};
+                let liCounter = '<ul class="store-pagination">'
+
+                let counter = 1;
+                for (let p = 0 ; p < parseInt(productCOunter); p = p + 15){
+                    liCounter =  liCounter + '<li class="active">'+ counter + '</li>'
+                    counter++;
+                }
+                liCounter =  liCounter + '<li><a href="#"><i class="fa fa-angle-right"></i></a></li></ul>';
+
+
+                let productCounterSpan = '<span class="store-qty">Showing 20-{{ sortedProducts | length }} products</span>';
+                storeFilter.innerHTML = productCounterSpan + liCounter;
+                <!-- /max product count -->
             })
         });
     </script>
@@ -328,4 +399,4 @@
 
 
 </body>
-</html>
+</html>0

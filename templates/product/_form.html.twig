@@ -1,5 +1,5 @@
-{{ form_start(form, {'attr': {'id': 'product-form'}}) }}
-        <div class="form-group">
+{{ form_start(form, {'attr': {'id': 'product-form', 'action': path('app_product_new'), 'method': 'POST'}}) }}
+<div class="form-group">
                 {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Name'}}) }}
                 {{ form_errors(form.name) }}
         </div>
@@ -23,9 +23,10 @@
                 {{ form_widget(form.discount, {'attr': {'class': 'form-control', 'placeholder': 'Discount'}}) }}
                 {{ form_errors(form.discount) }}
         </div>
+        {{ form_widget(form.id, {'attr': {'class': 'form-control', 'placeholder': 'Discount'}}) }}
         <div class="create-button-container">
                 {% if edit == true %}
-                        <button id="editProductButton" data-id="{{ productId }}" class="panel-continue">Edit</button>
+                        <button id="editProductButton" class="panel-continue">Edit</button>
                 {% else %}
                         <button id="createProductButton" type="submit" class="panel-continue">Create</button>
                 {% endif %}
