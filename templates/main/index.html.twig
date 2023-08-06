@@ -202,6 +202,8 @@
 <!-- /FOOTER -->
 <!-- jQuery Plugins -->
 {% block javascripts %}
+    <script src="{{ asset('style/js/nouislider.min.js') }}"></script>
+    <script src="{{ asset('style/js/main.js') }}"></script>
     <script>
         function SortProductByPrice() {
 //start
@@ -271,7 +273,8 @@
                             alert('Ajax request failed.');
                         }
                     });
-                }).on('click', '.btn-success', function (){
+                })
+                    .on('click', '.btn-success', function (){
                     let id = $(this).attr('data-id');
                     let price = $(this).attr('data-price');
 

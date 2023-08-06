@@ -14,7 +14,10 @@ final class OrderAdmin extends AbstractAdmin
     protected function configureFormFields(FormMapper $form): void
     {
         $form->add('firstName')
-            ->add('paidFor');
+             ->add('paidFor')
+             ->add('date')
+             ->add('totalPrice');
+
     }
 
     protected function configureListFields(ListMapper $list): void
@@ -30,6 +33,6 @@ final class OrderAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $show): void
     {
         $show->add('id')
-            ->add('name');
+             ->add('firstName');
     }
 }

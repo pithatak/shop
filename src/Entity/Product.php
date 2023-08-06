@@ -37,7 +37,6 @@ class Product
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $brochureFilename = null;
 
-
     #[ORM\OneToMany(mappedBy: 'Product', targetEntity: Review::class)]
     private Collection $reviews;
 

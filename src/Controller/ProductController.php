@@ -269,7 +269,7 @@ class ProductController extends AbstractController
         $form->handleRequest($request);
 
         $token = $this->container->get('security.token_storage')->getToken();
-        if($token !== null && $request->get('productId')){
+        if($token !== null){
             $user = $token->getUser();
             $userCarts =  $user->getCarts();
             $price = 0;
@@ -312,6 +312,7 @@ class ProductController extends AbstractController
             'userCarts' => $userCarts
         ]);
     }
+
     #[Route('/buy', name: 'product_buy', methods: ['POST'])]
     public function buyProducts(Request $request, OrderRepository $orderRepository, CartRepository $cartRepository): Response
     {
