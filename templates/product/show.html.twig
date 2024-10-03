@@ -42,7 +42,7 @@
 									{% if product.brochureFilename != null %}
 										<img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ product.name }}-image" class="img-product">
 									{% else %}
-										<img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image">
+										<img src="{{ asset('./style/img/girl.jpg') }}" alt="test image">
 									{% endif %}
 								</div>
 							</div>
@@ -298,7 +298,7 @@
 																{% if product.brochureFilename != null %}
 																	<img src="{{ asset(brochures_directory~product.brochureFilename) }}" alt="{{ product.name }}-image" class="img-product">
 																{% else %}
-																	<img src="{{ asset('./uploads/brochures/girl.jpg') }}" alt="test image">
+																	<img src="{{ asset('./style/img/girl.jpg') }}" alt="test image">
 																{% endif %}
 																<div class="product-label">
 																	{% if product.user.username is defined %}

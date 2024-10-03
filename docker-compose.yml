@@ -1,5 +1,8 @@
 ###############################################################################
 #                          Generated on phpdocker.io                          #
+#            docker-compose -f .\docker-compose.yml up --build                #
+#              php bin/console doctrine:schema:update --force                 #
+#                  php bin/console doctrine:fixtures:load                     #
 ###############################################################################
 version: '3.1'
 services:
@@ -28,6 +31,7 @@ services:
     restart: always
 
   php-fpm:
+    container_name: shop-www
     build: phpdocker/php-fpm
     working_dir: /application
     volumes:
@@ -37,7 +41,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: phpMyAdminTest6_2
+    container_name: phpMyAdminShop
     links:
       - mysql
     environment:
@@ -45,5 +49,5 @@ services:
       - PMA_HOST=mysql
       - PMA_PORT=3306
     ports:
-      - '53003:80'
+      - '53004:80'
     restart: always
