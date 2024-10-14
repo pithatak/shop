@@ -14,7 +14,7 @@ class WebScraper
     }
 
 
-    public function scrapeProducts($url)
+    public function scrapeDashumiaocoinProducts($url)
     {
 
         $crawler = $this->client->request('GET', $url);
@@ -22,18 +22,80 @@ class WebScraper
         $products = [];
 
         // Найти все элементы <li> внутри <ul class="pro-list clearfix ">
-        $crawler->filter('ul.pro-list li')->each(function ($node) use (&$products) {
-            $name = $node->filter('a.name')->count() ? $node->filter('a.name')->text() : 'Название отсутствует';
-            $price = $node->filter('span.price')->count() ? $node->filter('span.price')->text() : 'Цена отсутствует';
-            $imageUrl = $node->filter('div.pic img')->count() ? $node->filter('div.pic img')->attr('src') : null;
-            $productUrl = $node->filter('div.pic a')->count() ? 'https://www.dashumiaocoin.com' . $node->filter('div.pic a')->attr('href') : null;
+        //главна страница ul.pro-list li'
+        $crawler->filter('ul.common_pro_list1 li')->each(function ($node) use (&$products) {
+            if ($node->filter('a.name')->count()){
+                $name = $node->filter('a.name')->text();
+                $price = $node->filter('div.price')->text();
+                $imageUrl = $node->filter('a img')->attr('src');
+//            $productUrl = $node->filter('div.pic a')->count() ? 'https://www.dashumiaocoin.com' . $node->filter('div.pic a')->attr('href') : null;
 
-            $products[] = [
-                'name' => $name,
-                'price' => $price,
-                'image_url' => $imageUrl,
-                'product_url' => 'https://www.dashumiaocoin.com' . $productUrl,
-            ];
+                $products[] = [
+                    'name' => $name,
+                    'price' => $price,
+                    'image_url' => $imageUrl,
+//                'product_url' => 'https://www.dashumiaocoin.com' . $productUrl,
+                ];
+            }
+        });
+
+        return $products;
+    }
+
+    public function scrapeAmazonProducts($url)
+    {
+
+        $crawler = $this->client->request('GET', $url);
+
+        $products = [];
+
+        // Найти все элементы <li> внутри <ul class="pro-list clearfix ">
+        //главна страница ul.pro-list li'
+        $crawler->filter('ol.a-carousel li')->each(function ($node) use (&$products) {
+            if ($node->filter('div.p13n-sc-truncate-desktop-type2')->count()){
+                $name = $node->filter('div.p13n-sc-truncate-desktop-type2')->text();
+                $price = $node->filter('span._cDEzb_p13n-sc-price_3mJ9Z')->count() ? $node->filter('span._cDEzb_p13n-sc-price_3mJ9Z')->text() : 0;
+                $imageUrl = $node->filter('div.a-spacing-mini img')->attr('src');
+//            $productUrl = $node->filter('div.pic a')->count() ? 'https://www.dashumiaocoin.com' . $node->filter('div.pic a')->attr('href') : null;
+
+                $products[] = [
+                    'name' => $name,
+                    'price' => $price,
+                    'image_url' => $imageUrl,
+//                'product_url' => 'https://www.dashumiaocoin.com' . $productUrl,
+                ];
+            }
+        });
+
+        return $products;
+    }
+
+    public function scrapePromProducts($url)
+    {
+
+        $crawler = $this->client->request('GET', $url);
+
+        $products = [];
+
+        // Найти все элементы <li> внутри <ul class="pro-list clearfix ">
+        //главна страница ul.pro-list li'
+        $crawler->filter('div.JicYY')->each(function ($node) use (&$products) {
+            if ($node->filter('picture img')->count()){
+                $name = $node->filter('picture img')->attr('alt');
+                //іногда чогось бувають пустими
+                $discount = $node->filter('.AJ5TG [data-qaid="product_price"]')->count() ? $node->filter('.AJ5TG [data-qaid="product_price"]')->text() : NULL;
+                $price = $node->filter('.AJ5TG [data-qaid="old_price"]')->count() ? $node->filter('.AJ5TG [data-qaid="old_price"]')->text() : NULL;
+                $imageUrl = $node->filter('picture img')->attr('src');
+//            $productUrl = $node->filter('div.pic a')->count() ? 'https://www.dashumiaocoin.com' . $node->filter('div.pic a')->attr('href') : null;
+
+                $products[] = [
+                    'name' => $name,
+                    'price' => $price,
+                    'discount' => $discount,
+                    'image_url' => $imageUrl,
+//                'product_url' => 'https://www.dashumiaocoin.com' . $productUrl,
+                ];
+            }
         });
 
         return $products;
@@ -65,8 +127,6 @@ class WebScraper
 
         // Полный путь для сохранения изображения
         $fullPath = $brochures_directory . DIRECTORY_SEPARATOR . $newFilename;
-        dump('$full path = ');
-        dump($fullPath);
 
         // Сохранение изображения на сервере
         $result = file_put_contents($fullPath, $imageContent);
@@ -75,7 +135,7 @@ class WebScraper
             throw new \Exception("Не удалось сохранить изображение: $fullPath");
         }
 
-        return $fullPath; // Возвращает полный путь к сохраненному файлу
+        return $newFilename; // Возвращает полный путь к сохраненному файлу
     }
 
 }

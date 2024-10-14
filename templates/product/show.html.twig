@@ -17,7 +17,7 @@
 					<div class="col-md-12">
 						<ul class="breadcrumb-tree">
 							<li><a href="/">Home</a></li>
-							<li><a href="#">{{ product.category.name }}</a></li>
+							<li><a href="#">{% if product.category %}{{ product.category.name }}{% endif %}</a></li>
 							<li class="active">{{ product.name }}</li>
 						</ul>
 					</div>
@@ -108,7 +108,7 @@
 
 							<ul class="product-links">
 								<li>Category:</li>
-								<li><a href="#">{{ product.category.name }}</a></li>
+								<li><a href="#">{% if product.category %}{{ product.category.name }}{% endif %}</a></li>
 							</ul>
 
 							<ul class="product-links">
@@ -309,7 +309,7 @@
 																</div>
 															</div>
 															<div class="product-body">
-																<p class="product-category">{{ product.category.name }}</p>
+																<p class="product-category">{% if product.category %}{{ product.category.name }}{% endif %}</p>
 																<h3 class="product-name cut-and-hide"><a href="{{ path('app_product_show', { id: product.id }) }}"><span class="name-product">{{ product.name }}</span></a></h3>
 																{% if product.discount != 0 %}
 																	<h4 class="product-price"> $<span class="price-product">{{ product.discount }} </span><del class="product-old-price"> ${{ product.price }} </del></h4>
